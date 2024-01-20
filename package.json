@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@mappedin/mappedin-js": "^5.26.0"
+  }
+}
