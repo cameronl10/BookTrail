@@ -63,7 +63,7 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         if (!startLocation || !endLocation) return
         const directions = startLocation.directionsTo(endLocation)
         mapView.Journey.draw(directions)
-        mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 30 })
+        mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
         mapView.StackedMaps.showOverview()
     }
 
@@ -89,7 +89,7 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         const directions = startLocation.directionsTo(
             new MappedinDestinationSet(destinations));
         mapView.Journey.draw(directions);   
-        mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 30 })
+        mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
         mapView.StackedMaps.showOverview()
        })
 
