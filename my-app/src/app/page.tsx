@@ -9,11 +9,10 @@ const Map = dynamic(() => import("./map"), {
 
 export default function Home() {
   return (
-    <div>
-      
-      <NavBar/>
-      <div id="app" className="absolute top-0 max-h-screen"></div>
-      <MainSearch/>
+    <div className="overflow-hidden relative">
+      <Map />
+      <NavBar />
+      <MainSearch />
     </div>
   );
 }
