@@ -70,23 +70,7 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         mapId: process.env.NEXT_PUBLIC_MAPPEDIN_ID!,
         key: process.env.NEXT_PUBLIC_MAPPEDIN_KEY!,
         secret: process.env.NEXT_PUBLIC_MAPPEDIN_SECRET!,
-    })
     const mapView = useMapView(venue, mapViewElement)
-    // useEffect(() => {
-    //     if (!venue || !mapView) return
-
-    //     mapView.on(E_SDK_EVENT.MAP_CHANGED, () => {
-    //         const startLocation = venue.locations.find(l => l.name === "240B")
-    //         const endLocation = venue.locations.find(l => l.name === "Shelf =-")
-    //         if (!endLocation || !startLocation) return
-    //         const directions = startLocation.directionsTo(endLocation)
-    //         mapView.Journey.draw(directions)
-    //         mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 30 })
-    //         mapView.StackedMaps.showOverview()
-    //     })
-
-    //     return () => { mapView.Journey.clear() }
-    // }, [venue, mapView, shelfNumber])
 
     useEffect(() => { path_to_shelf() }, [shelfNumber])
 
