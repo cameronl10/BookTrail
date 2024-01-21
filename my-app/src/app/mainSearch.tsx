@@ -21,6 +21,7 @@ const BookOfTheDay = () => (
 const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
   const { user } = useUser();
   useEffect(() => {
+    console.log(user)
     if(!user?.sub) {
       setError("Not logged in")
       return setLoading(false)
@@ -179,6 +180,8 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
     const url = new URL(window.location.origin + "/api/findbook")
     url.searchParams.set("q", query)
     if (user?.sub) url.searchParams.set("sid", user.sub as string)
+
+    console.log(user)
     const response = await fetch(url.toString())
     if (response.status != 200) {
       console.error(`[query_books] fetch error: ${await response.text()}`)
