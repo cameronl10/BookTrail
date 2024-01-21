@@ -6,15 +6,17 @@ import { useUser } from "@auth0/nextjs-auth0/client";
 import XIcon from "~/components/xicon";
 import { Oval } from "react-loader-spinner";
 
-const BookOfTheDay = () => (
+const BookOfTheDay = ({updateShelfNumber}: {updateShelfNumber: (n: number)=>void}) => (
   <div className="bg-slate-800 py-3">
     <h1 className="text-2xl font-bold text-white mb-2">Book of The Day:</h1>
-    <Book
-      auth={"Stephen Covey"}
-      desc={"The 7 Habits of Highly Effective People, first published in 1989, is a business and self-help book written by Stephen R. Covey. Covey defines effectiveness as the balance of obtaining desirable results with caring for that which produces those results."}
-      name={"The 7 Habits of Highly Effective People"}
-      img={"https://m.media-amazon.com/images/I/51ST4ws-CgL._SY445_SX342_.jpg"}
-    />
+    <div onClick={() => updateShelfNumber(27)} className="hover:cursor-pointer">
+      <Book
+        auth={"Stephen Covey"}
+        desc={"The 7 Habits of Highly Effective People, first published in 1989, is a business and self-help book written by Stephen R. Covey. Covey defines effectiveness as the balance of obtaining desirable results with caring for that which produces those results."}
+        name={"The 7 Habits of Highly Effective People"}
+        img={"https://m.media-amazon.com/images/I/51ST4ws-CgL._SY445_SX342_.jpg"}
+      />
+    </div>
   </div>
 );
 
@@ -98,8 +100,8 @@ const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
 };
 
 
-function SearchArea({ hasResult, loading, error, book_clicked_handler, queryData, setSearchBox }:
-  { hasResult: boolean, loading: boolean, error: string | null, book_clicked_handler: (book: QueryResult) => void, queryData: QueryResult[] | null, setSearchBox: (s: string) => void }) {
+function SearchArea({ hasResult, loading, error, book_clicked_handler, queryData, setSearchBox, updateShelfNumber }:
+  { hasResult: boolean, loading: boolean, error: string | null, book_clicked_handler: (book: QueryResult) => void, queryData: QueryResult[] | null, setSearchBox: (s: string) => void, updateShelfNumber: (n: number)=>void }) {
   if (loading) {
     return (
       <div className="grid place-items-center py-10">
@@ -118,7 +120,7 @@ function SearchArea({ hasResult, loading, error, book_clicked_handler, queryData
   if (!hasResult) {
     return (
       <>
-        <BookOfTheDay />
+        <BookOfTheDay updateShelfNumber={updateShelfNumber} />
         <Recents setSearchBox={setSearchBox}/>
       </>
     )
@@ -247,6 +249,7 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
           loading={loading}
           setSearchBox={setSearchBox}
           error={queryError}
+          updateShelfNumber={updateShelfNumber}
         />
       </div>
     </div>
