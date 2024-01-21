@@ -27,13 +27,13 @@ const Recents = () => {
         {
           userRecentTitles.flatMap((title, i, a) => {
             const p = (
-              <div className="flex items-center gap-x-4">
+              <div className="flex items-center gap-x-4" key={`book-${i}`}>
                 <SearchIcon className="w-4 h-4 stroke-neutral-400" strokeWidth={3} />
                 <h2 className="text-neutral-400"> {title} </h2>
               </div>
             )
             if (i < a.length - 1)
-              return [p, (<hr className="w-full border-search-light border-neutral-400" />)]
+              return [p, (<hr className="w-full border-search-light border-neutral-400" key={`gap-${i}`} />)]
             else
               return [p]
           })
@@ -46,13 +46,6 @@ const Recents = () => {
 
 
 export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (a: number) => void }) {
-  //   const [mainSearchFocused, setMainSearchFocused] = React.useState(false);
-
-  //   const sizeClass = mainSearchFocused ? "h-[90vh]" : "h-[38vh]";
-
-  //   const handleFocusMainSearch = () => {
-  //     setMainSearchFocused(!mainSearchFocused);
-  //   };
   const shelfNumToSend = 139;
   const { user } = useUser();
   const [showResult, setShowResult] = useState(false);
@@ -98,7 +91,7 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
         <SearchIcon className="absolute w-6 h-6 stroke-neutral-400 left-3 top-[50%] translate-y-[-50%]" strokeWidth={2} />
         <form className="form" onSubmit={query_books}>
           <input type="search"
-            className="px-4 py-2 pl-12 w-full text-xl font-body rounded-lg bg-slate-700"
+            className="px-4 py-2 pl-12 w-full text-xl font-body rounded-xl bg-slate-700 text-neutral-300 focus:outline-none focus:ring-4"
             placeholder="Search BookTrail"
             onChange={(e) => setQuery(e.target.value)}
           />

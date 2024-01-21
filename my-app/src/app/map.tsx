@@ -70,6 +70,7 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         mapId: process.env.NEXT_PUBLIC_MAPPEDIN_ID!,
         key: process.env.NEXT_PUBLIC_MAPPEDIN_KEY!,
         secret: process.env.NEXT_PUBLIC_MAPPEDIN_SECRET!,
+    })
     const mapView = useMapView(venue, mapViewElement)
 
     useEffect(() => { path_to_shelf() }, [shelfNumber])
