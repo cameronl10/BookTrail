@@ -2,6 +2,7 @@
 import {useEffect } from "react";
 
 import {
+  E_SDK_EVENT,
   getVenueMaker,
   showVenue,
   TGetVenueMakerOptions,
@@ -13,18 +14,24 @@ const options: TGetVenueMakerOptions = {
   key: "65ac6209ca641a9a1399dc4c",
   secret: "f85d70b9f1b60514543db48191e581de0827c4f01c3e545e3e2e66ec690ecd14",
 };
-'use client';
 
+const initMap = async () =>{
+      const venue = await getVenueMaker(options);
+      await showVenue(document.getElementById("app")!, venue).then((mapView) =>{
+
+      mapView.on(E_SDK_EVENT.CLICK, ()=>{
+        mapView.FloatingLabels.labelAllLocations();
+
+        console.log("changed");
+        mapView.FloatingLabels.removeAll();
+      })
+    });
+  }
 import React, { useState } from "react";
 
 export default function Home() {
   useEffect(() => {
-    async function init(){
-      const venue = await getVenueMaker(options);
-      const mapView = await showVenue(document.getElementById("app")!, venue);
-
-    }
-    init();
+    initMap();
   },[])
   const [count, setCount] = useState(0);
 
@@ -47,12 +54,9 @@ export default function Home() {
       </div>
 
 
-      <div className="h-full bg-green-600">
-        <div className="h-3/4 bg-green-600">
+      <div className="h-full">
+        <div className="h-3/4" id = "app">
             test
-        </div>
-        <div className="h-1/4 bg-purple-900 rounded-t-[24px]" onClick={() => setCount(count+1)}>
-          e
         </div>
       </div>
     </div>
