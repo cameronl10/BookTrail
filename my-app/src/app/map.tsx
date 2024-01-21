@@ -62,7 +62,13 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         const endLocation = venue.locations.find(l => l.name == shelf_code)
         if (!startLocation || !endLocation) return
         const directions = startLocation.directionsTo(endLocation)
-        mapView.Journey.draw(directions)
+        mapView.Journey.draw(directions, {
+            pathOptions: {
+              color: "blue",
+              nearRadius: 1,
+              farRadius:0
+            }
+        });
         mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
         mapView.StackedMaps.showOverview()
 
@@ -85,7 +91,7 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
     useEffect(() => {
         if(!mapView || !venue)return;
        mapView.on(E_SDK_EVENT.MAP_CHANGED,() => {
-        const startLocation = venue.locations.find((location) => location.name === "240A");
+        const startLocation = venue.locations.find((location) => location.name === "Ike's Cafe");
         const destinations = [
             venue.locations.find((location) => location.name === 'Shelf A1'),
             venue.locations.find((location) => location.name == 'Shelf Z1'),
@@ -93,7 +99,13 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         if(!destinations || !startLocation)return;
         const directions = startLocation.directionsTo(
             new MappedinDestinationSet(destinations));
-        mapView.Journey.draw(directions);   
+            mapView.Journey.draw(directions, {
+                pathOptions: {
+                  color: "blue",
+                  nearRadius: 1,
+
+                }
+            });
         mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
         mapView.StackedMaps.showOverview()
        })
@@ -113,7 +125,13 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         if(!destinations)return;
         const directions = nearestNode.directionsTo(
             new MappedinDestinationSet(destinations));
-        mapView.Journey.draw(directions);   
+            mapView.Journey.draw(directions, {
+                pathOptions: {
+                  color: "blue",
+                  nearRadius: 1,
+                  farRadius:0
+                }
+            });  
         mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
         mapView.StackedMaps.showOverview()
        })
