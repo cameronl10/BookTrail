@@ -33,7 +33,7 @@ export async function GET(req: Request){
             Query string passed in is ${query_string}`, {
                 status: 500
             })
-    if(!sid || typeof sid != "string")
+    if(sid && typeof sid != "string")
         return new Response(`Sid not supplied, or not a string. Provided sid: \"${sid}\"`, {
             status: 500
         })
