@@ -1,6 +1,7 @@
 ![BookTrail](/my-app/public/logo.png "BookTrail")
 
 # BookTrail
+![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=nwhacks-2024)
 
 ### Access a world of knowledge around you
 
