@@ -2,9 +2,8 @@ import { URL } from "url";
 import { OpenLibraryResponse } from "./search_types";
 import { mongo_client_config, uri } from "../mongodb";
 import { MongoClient } from "mongodb";
-import { NextApiRequest, NextApiResponse } from "next";
 
-const log_search = async (query_string: string, sid: string) => {
+const log_search = async (query_string: string, sid: string | null) => {
     const client = new MongoClient(uri(), mongo_client_config)
     try {
         await client.connect();
