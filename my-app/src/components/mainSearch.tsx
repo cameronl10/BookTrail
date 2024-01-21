@@ -57,8 +57,6 @@ export default function MainSearch({}) {
           placeholder="Search BookTrail"
           name=""
           id=""
-          onFocus={() => searchBarFocusToggle(true)}
-          onBlur={() => searchBarFocusToggle(false)}
         />
       </div>
       <BookOfTheDay />
