@@ -6,6 +6,7 @@ const Map = dynamic(() => import("./map"), {
   ssr: false,
 });
 
+
 export default function Home() {
   return (
     <div className="overflow-hidden relative">

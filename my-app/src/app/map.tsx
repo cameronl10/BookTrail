@@ -13,7 +13,7 @@ import "@mappedin/mappedin-js/lib/mappedin.css";
 const useVenue = (options: TGetVenueMakerOptions) => {
     const [venue, setVenue] = useState<Mappedin | undefined>();
     useEffect(() => {
-        getVenueMaker(options).then(v=> setVenue(v));
+        getVenueMaker(options).then(v => setVenue(v));
     }, [])
     return venue;
 }
@@ -21,15 +21,18 @@ const useVenue = (options: TGetVenueMakerOptions) => {
 const useMapView = (venue?: Mappedin, map_ref?: RefObject<HTMLDivElement>) => {
     const [mapView, setMapView] = useState<MapView>();
     useEffect(() => {
-        if(venue === undefined || map_ref === undefined || !map_ref.current) return;
+        if (venue === undefined || map_ref === undefined || !map_ref.current) return;
         showVenue(map_ref.current, venue).then(mapView => {
-            
+            const startLocation = venue.locations.find((location) => location.name === "220");
+            const endLocation = venue.locations.find((location) => location.name === "493");
+            mapView.Journey.draw(startLocation!.directionsTo(endLocation!));
             setMapView(mapView)
         })
     }, [venue])
 
     useEffect(() => {
-        if(mapView === undefined) return;
+        if (mapView === undefined) return;
+
         mapView.on(E_SDK_EVENT.CLICK, () => {
             mapView.FloatingLabels.labelAllLocations();
         })
@@ -49,7 +52,10 @@ export default function Map() {
         key: process.env.NEXT_PUBLIC_MAPPEDIN_KEY!,
         secret: process.env.NEXT_PUBLIC_MAPPEDIN_SECRET!,
     });
+
     const mapView = useMapView(venue, mapViewElement);
+
+
     return (
         <div id="map_element" ref={mapViewElement} className="w-screen h-screen"></div>
     )
