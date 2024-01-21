@@ -3,6 +3,7 @@
 # 📚BookTrail📚   
 ![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=nwhacks-2024)
 
+### [Try it out!](https://booktrail.tech)
 ### 🤯Access a world of knowledge around you🤯
 
 ## Team Members:
