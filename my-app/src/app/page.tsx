@@ -1,27 +1,21 @@
 'use client'
 
 import NavBar from "~/components/navBar"
-import MainSearch from "~/components/mainSearch"
+import MainSearch from "~/app/mainSearch"
 import React from "react";
 import dynamic from "next/dynamic";
-import {useState} from "react"
+import { useState } from "react"
 const Map = dynamic(() => import("./map"), {
   ssr: false,
 });
 
-
 export default function Home() {
-  const[shelfNumber,setShelfNumber] = useState(0);
-
-  const updateShelfNumber = (newNum: number) => {
-    setShelfNumber(newNum);
-  }
-
+  const [shelfNumber, setShelfNumber] = useState<number | null>(null);
   return (
     <div className="relative">
-      <Map shelfNumber={shelfNumber}/>
+      <Map shelfNumber={shelfNumber} />
       <NavBar />
-      <MainSearch  updateShelfNumber={updateShelfNumber} />
+      <MainSearch updateShelfNumber={setShelfNumber} />
     </div>
   );
 }
