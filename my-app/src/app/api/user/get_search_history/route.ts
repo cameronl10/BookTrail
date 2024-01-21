@@ -4,11 +4,12 @@ import { mongo_client_config, uri } from "~/app/api/mongodb";
 export async function GET(req: Request) {
     const {searchParams} = new URL(req.url)
     const sid = searchParams.get("sid")
+    const doc_limit_string = searchParams.get("limit")
+    
     if (!sid || typeof sid != "string")
         return new Response(`SID is not valid, got \"${sid}\"`, {
             status: 500,
         })
-    const doc_limit_string = searchParams.get("limit")
     if (doc_limit_string && typeof doc_limit_string != "string")
         return new Response(`Limit must be a number, got \"${doc_limit_string}\"`, {
             status: 500,

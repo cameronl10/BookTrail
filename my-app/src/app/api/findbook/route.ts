@@ -4,6 +4,7 @@ import { mongo_client_config, uri } from "../mongodb";
 import { MongoClient } from "mongodb";
 
 const log_search = async (query_string: string, sid: string | null) => {
+    if(!sid) return;
     const client = new MongoClient(uri(), mongo_client_config)
     try {
         await client.connect();

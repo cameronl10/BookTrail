@@ -1,5 +1,5 @@
 "use client";
-import { FormEventHandler, UIEventHandler, useState } from "react";
+import { FormEventHandler, UIEventHandler, useEffect, useRef, useState } from "react";
 import Book from "~/components/book";
 import SearchIcon from "~/components/searchIcon";
 import { useUser } from "@auth0/nextjs-auth0/client";
@@ -18,8 +18,27 @@ const BookOfTheDay = () => (
   </div>
 );
 
-const Recents = () => {
-  const [userRecentTitles, setUserRecentTitles] = useState(["The 7 Habits of highly effective people", "Complete Pokedex", "BLACKPINK - The Movie"]);
+const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
+  const { user } = useUser();
+  useEffect(() => {
+    if(!user?.sub) return
+    const url = new URL(window.location.origin + "/api/user/get_search_history")
+    url.searchParams.set("sid", user.sub)
+    url.searchParams.set("limit", "3");
+
+    (async ()=>{
+      interface FetchSearchHistoryResults {
+        history: string[]
+      }
+      const res = await fetch(url.toString())
+      if(res.status != 200) return setError("Couldn't fetch recent titles")
+      const data: FetchSearchHistoryResults = await res.json()
+      setUserRecentTitles(data.history)
+      if(data.history.length == 0) setError("No recent titles")
+    })()
+  }, [user])
+  const [error, setError] = useState<string | null>(null);
+  const [userRecentTitles, setUserRecentTitles] = useState<string[] | null>(null);
 
   return (
     <div>
@@ -27,18 +46,36 @@ const Recents = () => {
 
       <div className="flex flex-col gap-y-3">
         {
-          userRecentTitles.flatMap((title, i, a) => {
-            const p = (
-              <div className="flex items-center gap-x-4" key={`book-${i}`}>
-                <SearchIcon className="w-4 h-4 stroke-neutral-400" strokeWidth={3} />
-                <h2 className="text-neutral-400"> {title} </h2>
-              </div>
-            )
-            if (i < a.length - 1)
-              return [p, (<hr className="w-full border-search-light border-neutral-400" key={`gap-${i}`} />)]
-            else
-              return [p]
-          })
+          error == null && userRecentTitles == null
+            ?
+            <div className="grid place-items-center py-4">
+              <Oval
+                height="50"
+                width="50"
+                color="#ffffff"
+                secondaryColor="#ffffff"
+                ariaLabel="oval-loading"
+                strokeWidth={6}
+              />
+            </div>
+            :
+            error != null || userRecentTitles == null ?
+            <div>
+              <p className="text-white"> {error} </p>
+            </div>
+            :
+            userRecentTitles.flatMap((title, i, a) => {
+              const p = (
+                <div className="flex items-center gap-x-4" key={`book-${i}`} onClick={()=>setSearchBox(title)}>
+                  <SearchIcon className="w-4 h-4 stroke-neutral-400" strokeWidth={3} />
+                  <h2 className="text-neutral-400"> {title} </h2>
+                </div>
+              )
+              if (i < a.length - 1)
+                return [p, (<hr className="w-full border-search-light border-neutral-400" key={`gap-${i}`} />)]
+              else
+                return [p]
+            })
         }
       </div>
     </div>
@@ -46,8 +83,8 @@ const Recents = () => {
 };
 
 
-function SearchArea({ hasResult, loading, book_clicked_handler, queryData }:
-  { hasResult: boolean, loading: boolean, book_clicked_handler: (book: QueryResult) => void, queryData: QueryResult[] | null }) {
+function SearchArea({ hasResult, loading, book_clicked_handler, queryData, setSearchBox }:
+  { hasResult: boolean, loading: boolean, book_clicked_handler: (book: QueryResult) => void, queryData: QueryResult[] | null, setSearchBox: (s: string) => void }) {
   if (loading) {
     return (
       <div className="grid place-items-center py-10">
@@ -67,7 +104,7 @@ function SearchArea({ hasResult, loading, book_clicked_handler, queryData }:
     return (
       <>
         <BookOfTheDay />
-        <Recents />
+        <Recents setSearchBox={setSearchBox}/>
       </>
     )
   }
@@ -107,6 +144,7 @@ interface QueryResult {
 export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (a: number) => void }) {
   const { user } = useUser();
 
+  const searchBoxRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState<string>("");
   const [queryData, setQueryData] = useState<QueryResult[] | null>(null);
   const [loading, setLoading] = useState(false);
@@ -118,7 +156,7 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
 
     const url = new URL(window.location.origin + "/api/findbook")
     url.searchParams.set("q", query)
-    if (user?.org_id) url.searchParams.set("user_sid", user?.org_id)
+    if (user?.sub) url.searchParams.set("sid", user.sub as string)
     const response = await fetch(url.toString())
     if (response.status != 200) {
       console.error(`[query_books] fetch error: ${await response.text()}`)
@@ -129,19 +167,20 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
     setLoading(false);
     setQueryData(data.matches);
   }
-
-  enum SearchBarPositions {
-    UPPER = "200px",
-    LOWER = "500px",
+  const setSearchBox = (s: string) => {
+    if (searchBoxRef.current == null) return;
+    searchBoxRef.current.value = s;
+    setQuery(s);
   }
+
+  enum SearchBarPositions { UPPER = "200px", LOWER = "500px", }
   const [topP, setTopP] = useState(SearchBarPositions.LOWER);
-
-
-  const f: UIEventHandler<HTMLDivElement> = (e) => {
+  const SCROLL_LIMIT = 10;
+  const scroll_collapse_handler: UIEventHandler<HTMLDivElement> = (e) => {
     const mainScrollArea = e.currentTarget
     if (!mainScrollArea) return;
     const scrollPos = mainScrollArea.scrollTop;
-    if (scrollPos > 30) setTopP(SearchBarPositions.UPPER)
+    if (scrollPos > SCROLL_LIMIT) setTopP(SearchBarPositions.UPPER)
   }
 
   return (
@@ -161,22 +200,23 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
               setQuery(new_query)
               new_query.length == 0 && setHasResult(false)
             }}
+            ref={searchBoxRef}
           />
           <XIcon className="w-10 h-10 stroke-neutral-400" strokeWidth={2} onClick={() => setTopP(SearchBarPositions.LOWER)} />
         </form>
       </div>
 
       {/* SCROLL AREA */}
-      <div className="overflow-y-scroll pb-8" onScroll={f}>
+      <div className="overflow-y-scroll pb-8" onScroll={scroll_collapse_handler}>
         <SearchArea
           book_clicked_handler={(book: QueryResult) => {
             setTopP(SearchBarPositions.LOWER)
-            console.log(book.shelf_id)
             updateShelfNumber(book.shelf_id)
           }}
           hasResult={hasResult}
           queryData={queryData}
           loading={loading}
+          setSearchBox={setSearchBox}
         />
       </div>
     </div>
