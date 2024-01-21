@@ -25,7 +25,8 @@ const useMapView = (venue?: Mappedin, map_ref?: RefObject<HTMLDivElement>) => {
     useEffect(() => {
         if (venue === undefined || map_ref === undefined || !map_ref.current) return
         showVenue(map_ref.current, venue).then(mapView => {
-            mapView.setMap("m_6c647f948adbbe52")
+            console.log(venue.maps)
+            mapView.setMap("m_c23714b3211bd273")
             setMapView(mapView)
         })
     }, [venue])
@@ -136,7 +137,7 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         mapView.StackedMaps.showOverview()
        })
 
-    },[mapView])
+    },[mapView,venue])
 
     return (
         <div id="map_element" ref={mapViewElement} className="w-screen h-screen">
