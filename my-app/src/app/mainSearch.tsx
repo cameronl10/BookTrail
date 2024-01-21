@@ -96,8 +96,8 @@ const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
 };
 
 
-function SearchArea({ hasResult, loading, book_clicked_handler, queryData, setSearchBox }:
-  { hasResult: boolean, loading: boolean, book_clicked_handler: (book: QueryResult) => void, queryData: QueryResult[] | null, setSearchBox: (s: string) => void }) {
+function SearchArea({ hasResult, loading, error, book_clicked_handler, queryData, setSearchBox }:
+  { hasResult: boolean, loading: boolean, error: string | null, book_clicked_handler: (book: QueryResult) => void, queryData: QueryResult[] | null, setSearchBox: (s: string) => void }) {
   if (loading) {
     return (
       <div className="grid place-items-center py-10">
@@ -119,6 +119,12 @@ function SearchArea({ hasResult, loading, book_clicked_handler, queryData, setSe
         <BookOfTheDay />
         <Recents setSearchBox={setSearchBox}/>
       </>
+    )
+  }
+
+  if(error) {
+    return (
+      <p className="text-white"> {error} </p>
     )
   }
 
@@ -163,10 +169,12 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
   const [queryData, setQueryData] = useState<QueryResult[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasResult, setHasResult] = useState(false);
+  const [queryError, setQueryError] = useState<string | null>(null);
   const query_books: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setLoading(true)
     setTopP(SearchBarPositions.UPPER)
+    setQueryError(null)
 
     const url = new URL(window.location.origin + "/api/findbook")
     url.searchParams.set("q", query)
@@ -174,6 +182,9 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
     const response = await fetch(url.toString())
     if (response.status != 200) {
       console.error(`[query_books] fetch error: ${await response.text()}`)
+      setLoading(false)
+      setHasResult(true)
+      setQueryError("Couldn't fetch books")
       return;
     }
     const data = await response.json()
@@ -231,6 +242,7 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
           queryData={queryData}
           loading={loading}
           setSearchBox={setSearchBox}
+          error={queryError}
         />
       </div>
     </div>
