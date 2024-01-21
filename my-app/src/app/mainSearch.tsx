@@ -83,8 +83,7 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
           </>
         ) : (
           <>
-            {console.log(responeData)}
-            {responseData.map()}
+          {console.log(responseData)}
           </>
         )}
 
