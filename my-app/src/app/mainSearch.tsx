@@ -26,7 +26,7 @@ const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
       setError("Not logged in")
       return setLoading(false)
     }
-
+    setError(null)
     setLoading(true)
     const url = new URL(window.location.origin + "/api/user/get_search_history")
     url.searchParams.set("sid", user.sub)

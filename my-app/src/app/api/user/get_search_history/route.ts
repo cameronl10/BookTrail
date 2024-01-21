@@ -20,7 +20,13 @@ export async function GET(req: Request) {
 
     try {
         await client.connect();
+    } catch (e) {
+        return new Response(`[get_search_history] could not connect to mongodb, ${JSON.stringify(e)}`, {
+            status: 500,
+        })
+    }
 
+    try {
         interface SearchQuery {
             query: string
         }
