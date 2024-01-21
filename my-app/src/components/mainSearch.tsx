@@ -37,10 +37,10 @@ export default function MainSearch({}) {
 
   return (
     <div
-      className={`h-full w-full flex-col bg-search-primary fixed rounded-t-3xl bg-slate-400 z-10 [&>div]:mx-4 pt-10 transition-[top]`}
+      className={"w-full flex flex-col bg-search-primary fixed rounded-t-3xl bg-slate-400 z-10 [&>div]:mx-4 pt-10 transition-[top] bottom-0"}
       style={{ top: `${topP}%` }}
     >
-      <div className="relative">
+      <div className="relative mb-4">
         <svg
           className="fill-black stroke-black top-[50%] translate-y-[-50%] left-3 absolute w-"
           xmlns="http://www.w3.org/2000/svg"
@@ -61,14 +61,16 @@ export default function MainSearch({}) {
           onBlur={() => searchBarFocusToggle(false)}
         />
       </div>
-      <BookOfTheDay />
-      <Recents />
+      <div className="overflow-y-scroll mx-4">
+        <BookOfTheDay />
+        <Recents />
+      </div>
     </div>
   );
 }
 
 const BookOfTheDay = () => (
-  <div className="bg-slate-500 m-4">
+  <div className="bg-slate-500">
     <h1 className="text-2xl font-bold">Book of The Day:</h1>
     <div className="w-30 h-30 flex flex-row">
       <div className="w-[50px] h-[50px] m-6 bg-search-highlight rounded-full flex items-center justify-center">
@@ -91,7 +93,7 @@ const BookOfTheDay = () => (
 );
 
 const Recents = () => (
-  <div className="bg-slate-500 m-4">
+  <div className="bg-slate-500">
     <h1 className="text-2xl font-bold">
       Recents:
     </h1>
