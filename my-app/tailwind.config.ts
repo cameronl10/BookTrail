@@ -19,11 +19,11 @@ const config: Config = {
       },
       colors: {
         'primary-ubc': '#002145',
-        'search-primary' : '#222830',
-        'search-bar' : "#363A43",
-        'search-text' : "#A1A4AB",
-        'search-bold' : "#2c2c2E",
-        'search-highlight' : "#00A7E1",
+        'search-primary': '#222830',
+        'search-bar': "#363A43",
+        'search-text': "#A1A4AB",
+        'search-bold': "#2c2c2E",
+        'search-highlight': "#00A7E1",
       }
 
     },
