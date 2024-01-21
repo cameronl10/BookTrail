@@ -8,7 +8,7 @@ export default function Book(props: {
     return (
         <div className="flex flex-row gap-x-2 w-full h-40 bg-neutral-900 p-4 rounded-xl">
             <div className="px-1 flex-shrink-0">
-                <img className="h-full w-20 object-cover" src={props.img} alt="cover"/>
+                <img className="h-full w-20 object-cover" src={props.img ?? "book.png"} alt="cover"/>
             </div>
             <div className="text-white overflow-hidden">
                 <h1 className="text-lg font-bold whitespace-nowrap text-ellipsis overflow-hidden">

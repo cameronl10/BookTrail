@@ -4,6 +4,7 @@ import Book from "~/components/book";
 import SearchIcon from "~/components/searchIcon";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import XIcon from "~/components/xicon";
+import { Oval, TailSpin } from "react-loader-spinner";
 
 const BookOfTheDay = () => (
   <div className="bg-slate-800 py-3">
@@ -45,14 +46,76 @@ const Recents = () => {
 };
 
 
+function SearchArea({ hasResult, loading, book_clicked_handler, queryData }:
+  { hasResult: boolean, loading: boolean, book_clicked_handler: (book: QueryResult) => void, queryData: QueryResult[] | null }) {
+  if (loading) {
+    return (
+      <div className="grid place-items-center py-10">
+        <Oval
+          height="50"
+          width="50"
+          color="#ffffff"
+          secondaryColor="#ffffff"
+          ariaLabel="oval-loading"
+          strokeWidth={6}
+        />
+      </div>
+    )
+  }
+
+  if (!hasResult) {
+    return (
+      <>
+        <BookOfTheDay />
+        <Recents />
+      </>
+    )
+  }
+
+  if (queryData == null) {
+    return (
+      <p>Has result is true, but query data is still null</p>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-y-4">
+      {queryData.map((book, index) => (
+        <div onClick={() => book_clicked_handler(book)}>
+          <Book
+            key={index}
+            auth={book.dewey_decimal}
+            desc={book.description}
+            name={book.title}
+            img={book.cover_url}
+          />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+
+interface QueryResult {
+  dewey_decimal: string
+  title: string
+  description: string
+  shelf_id: number
+  cover_url: string
+}
+
 export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (a: number) => void }) {
   const { user } = useUser();
 
   const [query, setQuery] = useState<string>("");
-  const [queryData, setQueryData] = useState([]);
-  const [showResult, setShowResult] = useState(false);
+  const [queryData, setQueryData] = useState<QueryResult[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [hasResult, setHasResult] = useState(false);
   const query_books: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
+    setLoading(true)
+    setTopP(SearchBarPositions.UPPER)
+
     const url = new URL(window.location.origin + "/api/findbook")
     url.searchParams.set("q", query)
     if (user?.org_id) url.searchParams.set("user_sid", user?.org_id)
@@ -62,7 +125,8 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
       return;
     }
     const data = await response.json()
-    setShowResult(true);
+    setHasResult(true);
+    setLoading(false);
     setQueryData(data.matches);
   }
 
@@ -77,7 +141,7 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
     const mainScrollArea = e.currentTarget
     if (!mainScrollArea) return;
     const scrollPos = mainScrollArea.scrollTop;
-    if(scrollPos > 30) setTopP(SearchBarPositions.UPPER)
+    if (scrollPos > 30) setTopP(SearchBarPositions.UPPER)
   }
 
   return (
@@ -92,43 +156,28 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
           <input type="search"
             className="px-4 py-2 pl-12 w-full text-xl font-body rounded-xl bg-slate-700 text-neutral-300 focus:outline-none focus:ring-4 duration-600 ease-in-out flex-1"
             placeholder="Search BookTrail"
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => setTopP(SearchBarPositions.UPPER)}
+            onChange={(e) => {
+              const new_query = e.target.value
+              setQuery(new_query)
+              new_query.length == 0 && setHasResult(false)
+            }}
           />
-
-          <XIcon className="w-10 h-10 stroke-neutral-400" strokeWidth={2} onClick={()=>setTopP(SearchBarPositions.LOWER)}/>
+          <XIcon className="w-10 h-10 stroke-neutral-400" strokeWidth={2} onClick={() => setTopP(SearchBarPositions.LOWER)} />
         </form>
       </div>
 
       {/* SCROLL AREA */}
       <div className="overflow-y-scroll pb-8" onScroll={f}>
-        {!showResult ? (
-          <>
-            <BookOfTheDay />
-            <Recents />
-          </>
-        ) : (
-          <>
-               <>
-               
-          {queryData.map((book,index) => (
-          <div                 onClick = {() => 
+        <SearchArea
+          book_clicked_handler={(book: QueryResult) => {
+            setTopP(SearchBarPositions.LOWER)
+            console.log(book.shelf_id)
             updateShelfNumber(book.shelf_id)
-          }>
-          <Book
-                
-                key={index}
-                auth={book.dewey_decimal} 
-                desc={book.description} 
-                name={book.title} 
-                img={book.cover_url}
-
-          />
-          </div>
-          ))}
-        </>
-          </>
-        )}
+          }}
+          hasResult={hasResult}
+          queryData={queryData}
+          loading={loading}
+        />
       </div>
     </div>
   );
