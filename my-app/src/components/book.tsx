@@ -18,7 +18,7 @@ export default function navBar(props: {
                 </h3>
             </div>
             <div className="w-1/4 m-2 px-1 grid place-content-center">
-                <img src={props.img} alt="cover"/>
+                <img className="max-w-full object-cover" src={props.img} alt="cover"/>
             </div>
         </div>
     )
