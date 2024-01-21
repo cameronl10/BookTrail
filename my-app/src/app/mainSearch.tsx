@@ -118,7 +118,7 @@ function SearchArea({ hasResult, loading, book_clicked_handler, queryData, setSe
   return (
     <div className="flex flex-col gap-y-4">
       {queryData.map((book, index) => (
-        <div onClick={() => book_clicked_handler(book)}>
+        <div onClick={() => book_clicked_handler(book)} key={`search-book-${index}`}>
           <Book
             key={index}
             auth={book.dewey_decimal}
