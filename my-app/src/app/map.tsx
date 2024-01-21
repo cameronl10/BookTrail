@@ -25,8 +25,8 @@ const useMapView = (venue?: Mappedin, map_ref?: RefObject<HTMLDivElement>) => {
     useEffect(() => {
         if (venue === undefined || map_ref === undefined || !map_ref.current) return
         showVenue(map_ref.current, venue).then(mapView => {
-            console.log(venue.maps)
-            mapView.setMap("m_c23714b3211bd273")
+            const mapid = venue.maps[3].id;
+            mapView.setMap(mapid)
             setMapView(mapView)
         })
     }, [venue])
