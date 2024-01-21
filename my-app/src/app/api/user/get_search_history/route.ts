@@ -32,9 +32,9 @@ export async function GET(req: Request) {
         await client.close();
         return Response.json({ history: history_string_arr })
     }
-    catch {
+    catch (e) {
         await client.close();
-        return new Response(`[get_search_history] could not get search history for user with sid ${sid}`, {
+        return new Response(`[get_search_history] could not get search history for user with sid ${sid}, ${JSON.stringify(e)}`, {
             status: 500,
         })
     }
