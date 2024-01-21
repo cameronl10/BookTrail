@@ -8,7 +8,10 @@ const config: Config = {
   ],
   theme: {
     colors: {
-      'primary-ubc': '#002145'
+      'primary-ubc': '#002145',
+      'search-primary' : '#222830',
+      'search-bar' : "#363A43",
+      'search-text' : "#A1A4AB"
     },
     fontFamily: {
       'body': ['"Open Sans"'],

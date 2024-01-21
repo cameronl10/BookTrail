@@ -1,6 +1,7 @@
 'use client'
 import {useEffect } from "react";
 import NavBar from "./components/navBar"
+import MainSearch from "./components/mainSearch"
 
 import {
   E_SDK_EVENT,
@@ -37,8 +38,10 @@ export default function Home() {
   const [count, setCount] = useState(0);
 
   return (
-    <div id="app">
+    <div className="w-screen h-screen">
       <NavBar/>
+      <div id="app" className="absolute top-0 max-h-screen"></div>
+      <MainSearch></MainSearch>
     </div>
     
     // <div className="w-screen h-screen flex-1 bg-slate-700 p-0">
