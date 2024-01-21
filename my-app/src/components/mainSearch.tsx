@@ -52,7 +52,7 @@ export default function MainSearch({}) {
     >
       <div className="relative mb-4">
         <svg
-          className="fill-black stroke-black top-[50%] translate-y-[-50%] left-3 absolute w-"
+          className="fill-black top-[50%] translate-y-[-50%] left-3 absolute w-8"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="21"
@@ -73,6 +73,7 @@ export default function MainSearch({}) {
         </form>
       </div>
       <div className="overflow-y-scroll mx-4">
+
         <BookOfTheDay />
         <Recents />
       </div>
