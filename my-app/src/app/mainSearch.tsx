@@ -216,7 +216,7 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
 
   return (
     <div
-      className="w-full flex flex-col fixed bg-slate-800 z-10 [&>div]:mx-4 rounded-t-3xl pt-8 gap-y-4
+      className="w-full flex flex-col fixed bg-slate-800 bg-opacity-80 backdrop-blur-md z-10 [&>div]:mx-4 rounded-t-3xl pt-8 gap-y-4
         transition-[top] bottom-0"
       style={{ top: topP }}
     >
