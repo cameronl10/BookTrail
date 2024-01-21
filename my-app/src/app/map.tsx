@@ -13,6 +13,7 @@ import "@mappedin/mappedin-js/lib/mappedin.css";
 
 const useVenue = (options: TGetVenueMakerOptions) => {
     const [venue, setVenue] = useState<Mappedin | undefined>();
+    const [level, setlevel] = useState(0);
     useEffect(() => {
         getVenueMaker(options).then(v => setVenue(v));
     }, [])
@@ -95,15 +96,15 @@ export default function Map() {
     }, [venue, mapView])
     
     function onLevelChange(event: Event) {
-        const id = (event.target as )
+
     }
 
 
     return (
         <div id="map_element"  ref={mapViewElement} className="w-screen h-screen">
-                  <div className="inset-x-10 inset-y-20 absolute z-50 w-4 border-slate-500 text-xl border-rounded-md ">
-                <button onClick={() => console.log('Button 1 clicked')}>+</button>
-                <button onClick={() => console.log('Button 2 clicked')}>-</button>
+                  <div className="flex flex-col inset-x-10 inset-y-20 absolute z-50 text-xl border-rounded-md">
+                <button className="w-8 h-8 bg-slate-100 m-1 p-0 text-center rounded-sm" onClick={() => setlevel(Math.min(level+1, 3))}>+</button>
+                <button className="w-8 h-8 bg-slate-100 m-1 p-0 text-center rounded-sm" onClick={() => setlevel(Math.max(level-1, 0))}>-</button>
             </div>
         </div>
     )
