@@ -11,17 +11,17 @@ const Map = dynamic(() => import("./map"), {
 
 
 export default function Home() {
-  const [mapString, setMapString] = useState<string>('initString');
+  const[shelfNumber,setShelfNumber] = useState(0);
 
-  const updateString = (newString: string) =>{
-    setMapString(newString);
+  const updateShelfNumber = (newNum: number) => {
+    setShelfNumber(newNum);
   }
 
   return (
     <div className="relative">
-      <Map  mapString={mapString} setMapString={updateString} />
+      <Map shelfNumber={shelfNumber}/>
       <NavBar />
-      <MainSearch />
+      <MainSearch  updateShelfNumber={updateShelfNumber} />
     </div>
   );
 }

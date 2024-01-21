@@ -1,5 +1,5 @@
 "use client";
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Drawer,
@@ -13,7 +13,7 @@ import {
 } from "./ui/drawer";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
-export default function MainSearch({}) {
+export default function MainSearch({updateShelfNumber}) {
   //   const [mainSearchFocused, setMainSearchFocused] = React.useState(false);
 
   //   const sizeClass = mainSearchFocused ? "h-[90vh]" : "h-[38vh]";
@@ -21,7 +21,7 @@ export default function MainSearch({}) {
   //   const handleFocusMainSearch = () => {
   //     setMainSearchFocused(!mainSearchFocused);
   //   };
-
+  const shelfNumToSend = 139;
   const { user, error, isLoading } = useUser();
 
   const pooop: FormEventHandler<HTMLFormElement> = async (e) => {
@@ -37,6 +37,8 @@ export default function MainSearch({}) {
       return;
     }
     const data = await response.json()
+    updateShelfNumber(shelfNumToSend)
+
     console.log(data)
   }
 
