@@ -13,7 +13,6 @@ import "@mappedin/mappedin-js/lib/mappedin.css";
 
 const useVenue = (options: TGetVenueMakerOptions) => {
     const [venue, setVenue] = useState<Mappedin | undefined>();
-    const [level, setlevel] = useState(0);
     useEffect(() => {
         getVenueMaker(options).then(v => setVenue(v));
     }, [])
@@ -68,6 +67,7 @@ export default function Map() {
     //     mapView.Journey.draw(directions);
         
     mapView.on(E_SDK_EVENT.CLICK, ({ position }) => {
+        
         const coordinate = mapView.currentMap.createCoordinate(
           position.latitude,
           position.longitude
@@ -95,17 +95,15 @@ export default function Map() {
         }
     }, [venue, mapView])
     
-    function onLevelChange(event: Event) {
 
-    }
 
 
     return (
         <div id="map_element"  ref={mapViewElement} className="w-screen h-screen">
-                  <div className="flex flex-col inset-x-10 inset-y-20 absolute z-50 text-xl border-rounded-md">
-                <button className="w-8 h-8 bg-slate-100 m-1 p-0 text-center rounded-sm" onClick={() => setlevel(Math.min(level+1, 3))}>+</button>
-                <button className="w-8 h-8 bg-slate-100 m-1 p-0 text-center rounded-sm" onClick={() => setlevel(Math.max(level-1, 0))}>-</button>
+                  {/* <div className="flex flex-col inset-x-10 inset-y-20 absolute z-50 text-xl border-rounded-md"> */}
+                {/* <button className="w-8 h-8 bg-slate-100 m-1 p-0 text-center rounded-sm" onClick={() => setlevel(Math.min(level+1, 3))}>+</button>
+                <button className="w-8 h-8 bg-slate-100 m-1 p-0 text-center rounded-sm" onClick={() => setlevel(Math.max(level-1, 0))}>-</button> */}
             </div>
-        </div>
+      
     )
 }
