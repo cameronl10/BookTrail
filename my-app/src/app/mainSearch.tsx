@@ -39,6 +39,7 @@ const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
       const res = await fetch(url.toString())
       if(res.status != 200) {
         setError("Couldn't fetch recent titles")
+        console.error("[Recents] fetch error: ", await res.text())
         return setLoading(false)
       }
       const data: FetchSearchHistoryResults = await res.json()
