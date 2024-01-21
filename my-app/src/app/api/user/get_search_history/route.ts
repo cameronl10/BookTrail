@@ -20,8 +20,6 @@ export async function GET(req: Request) {
 
     try {
         await client.connect();
-        console.log("[get_search_history] connected to mongodb")
-        console.log(uri())
     } catch (e) {
         return new Response(`[get_search_history] could not connect to mongodb, ${JSON.stringify(e)}`, {
             status: 500,
@@ -42,7 +40,7 @@ export async function GET(req: Request) {
     }
     catch (e) {
         await client.close();
-        return new Response(`[get_search_history] could not get search history for user with sid ${sid}, ${JSON.stringify(e)}`, {
+        return new Response(`[get_search_history] could not get search history for user with sid ${sid}, ${JSON.stringify(e)} ${uri()}`, {
             status: 500,
         })
     }
