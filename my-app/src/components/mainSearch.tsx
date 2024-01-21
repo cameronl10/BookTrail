@@ -13,7 +13,8 @@ export default function MainSearch({updateShelfNumber}) {
   //   };
   const shelfNumToSend = 139;
   const { user, error, isLoading } = useUser();
-
+  const [showResult,setShowResult] = useState(false);
+  const [responseData, setData] = useState([]);
   const pooop: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     const url = new URL(window.location.origin + "/api/findbook")
@@ -28,8 +29,8 @@ export default function MainSearch({updateShelfNumber}) {
     }
     const data = await response.json()
     updateShelfNumber(shelfNumToSend)
-
-    console.log(data)
+    setShowResult(true);
+    setData(data.matches);
   }
 
   enum SearchBarPositions {
@@ -75,9 +76,18 @@ export default function MainSearch({updateShelfNumber}) {
         </form>
       </div>
       <div className="overflow-y-scroll mx-4">
-
+        {!showResult ? (
+        <>
         <BookOfTheDay />
         <Recents />
+        </>
+        ) : (
+          <>
+          {console.log(responeData)}
+          {responseData.map()}
+          </>
+        )}
+        
       </div>
     </div>
   );

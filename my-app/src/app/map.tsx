@@ -9,6 +9,7 @@ import {
     TGetVenueMakerOptions,
 } from "@mappedin/mappedin-js";
 import "@mappedin/mappedin-js/lib/mappedin.css";
+import { start } from "repl";
 
 
 const useVenue = (options: TGetVenueMakerOptions) => {
@@ -54,14 +55,14 @@ export default function Map({shelfNumber}) {
             //divide shelf number by 7 to get character
             // modulo 7 to get number, if greater than 7 set to 7
             const alphNumber = String.fromCharCode(((shelfNumber/7) + 64));
-            let remainder = (shelfNumber % 26);
-            if(remainder > 7){
-                remainder = 7;
-            }
+            let remainder = (shelfNumber % 7);
+            remainder++;
+
 
             const shelfCode = "Shelf " + alphNumber+remainder;
             console.log(shelfCode)
             if(!mapView || !venue)return;
+
             const startLocation = venue.locations.find(
                 (location) => location.name === "240A"
             );
@@ -75,26 +76,10 @@ export default function Map({shelfNumber}) {
                 verticalDistanceBetweenMaps:30
             })
             mapView.StackedMaps.showOverview();
-
-            mapView.on(E_SDK_EVENT.CLICK, ({ position }) => {
-                const coordinate = mapView.currentMap.createCoordinate(
-                position.latitude,
-                position.longitude
-              );
-              const nearestNode = coordinate.nearestNode;
-              const endLocation = venue.locations.find(
-                (location) => location.name === shelfCode
-              );
-              if(!endLocation) return;
-              const directions = nearestNode.directionsTo(endLocation);
             
-              mapView.Journey.draw(directions);
-      
-              mapView.StackedMaps.enable({
-                  verticalDistanceBetweenMaps:30
-              })
-              mapView.StackedMaps.showOverview();
-            });
+   
+
+            
         }
     }
 
@@ -107,7 +92,34 @@ export default function Map({shelfNumber}) {
     
     
     const mapView = useMapView(venue, mapViewElement);
+    useEffect(() => {
+        if(!venue || !mapView)return;
 
+        
+
+        
+        mapView.on(E_SDK_EVENT.MAP_CHANGED, () => {
+                const startLocation = venue.locations.find(
+                    (location) => location.name === "240B"
+                )
+                const endLocation = venue.locations.find(
+                  (location) => location.name === "Shelf =-"
+                );
+                if(!endLocation || !startLocation) return;
+                const directions = startLocation.directionsTo(endLocation);
+              
+                mapView.Journey.draw(directions);
+        
+                mapView.StackedMaps.enable({
+                    verticalDistanceBetweenMaps:30
+                })
+                mapView.StackedMaps.showOverview();
+        })
+
+        return () => {  
+            mapView.Journey.clear();
+        }
+    }, [venue, mapView,shelfNumber])
     
     useEffect(() => {
         navigateShelf();
