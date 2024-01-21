@@ -21,8 +21,9 @@ const useVenue = (options: TGetVenueMakerOptions) => {
 const useMapView = (venue?: Mappedin, map_ref?: RefObject<HTMLDivElement>) => {
     const [mapView, setMapView] = useState<MapView>();
     useEffect(() => {
-        if(venue === undefined || map_ref === undefined || map_ref.current === null) return;
+        if(venue === undefined || map_ref === undefined || !map_ref.current) return;
         showVenue(map_ref.current, venue).then(mapView => {
+            
             setMapView(mapView)
         })
     }, [venue])
@@ -40,15 +41,15 @@ const useMapView = (venue?: Mappedin, map_ref?: RefObject<HTMLDivElement>) => {
     return mapView;
 }
 
+
 export default function Map() {
     const mapViewElement = useRef<HTMLDivElement>(null);
     const venue = useVenue({
-        mapId: "65ac471fca641a9a1399dc2b",
-        key: "65ac6209ca641a9a1399dc4c",
-        secret: "f85d70b9f1b60514543db48191e581de0827c4f01c3e545e3e2e66ec690ecd14",
+        mapId: process.env.NEXT_PUBLIC_MAPPEDIN_ID!,
+        key: process.env.NEXT_PUBLIC_MAPPEDIN_KEY!,
+        secret: process.env.NEXT_PUBLIC_MAPPEDIN_SECRET!,
     });
     const mapView = useMapView(venue, mapViewElement);
-
     return (
         <div id="map_element" ref={mapViewElement} className="w-screen h-screen"></div>
     )
