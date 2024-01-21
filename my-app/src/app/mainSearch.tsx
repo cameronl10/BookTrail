@@ -110,11 +110,13 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
         ) : (
           <>
                <>
-          {responseData.map((book,index) => (
+               
+          {queryData.map((book,index) => (
           <div                 onClick = {() => 
             updateShelfNumber(book.shelf_id)
           }>
           <Book
+                
                 key={index}
                 auth={book.dewey_decimal} 
                 desc={book.description} 
