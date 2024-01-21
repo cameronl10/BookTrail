@@ -1,8 +1,10 @@
 
 export default function Home() {
   return (
-    <div>
-      <h1>Hello world</h1>
+    
+    <div className="">
+      <div className="text-s">Hello World</div>
+      <div className="text-xl">Hello World</div>
     </div>
   );
 }
