@@ -1,8 +1,9 @@
 "use client";
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler, UIEventHandler, useState } from "react";
 import Book from "~/components/book";
 import SearchIcon from "~/components/searchIcon";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import XIcon from "~/components/xicon";
 
 const BookOfTheDay = () => (
   <div className="bg-slate-800 py-3">
@@ -44,12 +45,12 @@ const Recents = () => {
 };
 
 
-
 export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (a: number) => void }) {
-  const shelfNumToSend = 139;
   const { user } = useUser();
+
+  const [query, setQuery] = useState<string>("");
+  const [queryData, setQueryData] = useState([]);
   const [showResult, setShowResult] = useState(false);
-  const [responseData, setData] = useState([]);
   const query_books: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     const url = new URL(window.location.origin + "/api/findbook")
@@ -61,45 +62,46 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
       return;
     }
     const data = await response.json()
-    updateShelfNumber(shelfNumToSend)
     setShowResult(true);
-    setData(data.matches);
+    setQueryData(data.matches);
   }
 
   enum SearchBarPositions {
-    LOWER = 80,
-    UPPER = 50,
+    UPPER = "200px",
+    LOWER = "500px",
   }
   const [topP, setTopP] = useState(SearchBarPositions.LOWER);
-  const [query, setQuery] = useState<string>("");
-  const searchBarFocusToggle = (isFocus: boolean) => {
-    console.log(isFocus);
-    if (isFocus) {
-      setTopP(SearchBarPositions.UPPER);
-    } else {
-      setTopP(SearchBarPositions.LOWER);
-    }
-  };
+
+
+  const f: UIEventHandler<HTMLDivElement> = (e) => {
+    const mainScrollArea = e.currentTarget
+    if (!mainScrollArea) return;
+    const scrollPos = mainScrollArea.scrollTop;
+    if(scrollPos > 30) setTopP(SearchBarPositions.UPPER)
+  }
 
   return (
     <div
       className="w-full flex flex-col fixed bg-slate-800 z-10 [&>div]:mx-4 rounded-t-3xl pt-8 gap-y-4
         transition-[top] bottom-0"
-      style={{ top: ` 50%` }}
+      style={{ top: topP }}
     >
       <div className="relative">
         <SearchIcon className="absolute w-6 h-6 stroke-neutral-400 left-3 top-[50%] translate-y-[-50%]" strokeWidth={2} />
-        <form className="form" onSubmit={query_books}>
+        <form className="flex items-center gap-x-2" onSubmit={query_books}>
           <input type="search"
-            className="px-4 py-2 pl-12 w-full text-xl font-body rounded-xl bg-slate-700 text-neutral-300 focus:outline-none focus:ring-4"
+            className="px-4 py-2 pl-12 w-full text-xl font-body rounded-xl bg-slate-700 text-neutral-300 focus:outline-none focus:ring-4 duration-600 ease-in-out flex-1"
             placeholder="Search BookTrail"
             onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setTopP(SearchBarPositions.UPPER)}
           />
+
+          <XIcon className="w-10 h-10 stroke-neutral-400" strokeWidth={2} onClick={()=>setTopP(SearchBarPositions.LOWER)}/>
         </form>
       </div>
 
       {/* SCROLL AREA */}
-      <div className="overflow-y-scroll pb-8">
+      <div className="overflow-y-scroll pb-8" onScroll={f}>
         {!showResult ? (
           <>
             <BookOfTheDay />
@@ -107,7 +109,7 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
           </>
         ) : (
           <>
-          {console.log(responseData)}
+            {console.log(queryData)}
           </>
         )}
       </div>

@@ -2,7 +2,6 @@
 
 import NavBar from "~/components/navBar"
 import MainSearch from "~/app/mainSearch"
-import React from "react";
 import dynamic from "next/dynamic";
 import { useState } from "react"
 const Map = dynamic(() => import("./map"), {
