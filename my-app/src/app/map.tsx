@@ -55,9 +55,9 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
     const path_to_shelf = () => {
         if (!shelfNumber) return
         if (!mapView || !venue) return
-        console.log(shelfNumber);
         const startLocation = venue.locations.find(l => l.name === "240A")
-        const endLocation = venue.locations.find(l => l.name == shelf_number_to_code(shelfNumber))
+        const shelf_code = shelf_number_to_code(shelfNumber);
+        const endLocation = venue.locations.find(l => l.name == shelf_code)
         if (!startLocation || !endLocation) return
         const directions = startLocation.directionsTo(endLocation)
         mapView.Journey.draw(directions)
@@ -73,7 +73,10 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
     })
     const mapView = useMapView(venue, mapViewElement)
 
-    useEffect(() => { path_to_shelf() }, [shelfNumber])
+    useEffect(() => { 
+        console.log("shelf number changed to ", shelfNumber)
+        path_to_shelf()
+    }, [shelfNumber])
 
 
     return (

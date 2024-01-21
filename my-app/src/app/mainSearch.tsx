@@ -137,7 +137,7 @@ function SearchArea({ hasResult, loading, error, book_clicked_handler, queryData
   return (
     <div className="flex flex-col gap-y-4">
       {queryData.map((book, index) => (
-        <div onClick={() => book_clicked_handler(book)} key={`search-book-${index}`}>
+        <div onClick={() => book_clicked_handler(book)} key={`search-book-${index}`} className="hover:cursor-pointer">
           <Book
             key={index}
             auth={book.author ?? "Unknown Author"}
