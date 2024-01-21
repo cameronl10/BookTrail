@@ -4,7 +4,7 @@ import Book from "~/components/book";
 import SearchIcon from "~/components/searchIcon";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import XIcon from "~/components/xicon";
-import { Oval, TailSpin } from "react-loader-spinner";
+import { Oval } from "react-loader-spinner";
 
 const BookOfTheDay = () => (
   <div className="bg-slate-800 py-3">
@@ -21,7 +21,10 @@ const BookOfTheDay = () => (
 const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
   const { user } = useUser();
   useEffect(() => {
-    if(!user?.sub) return
+    if(!user?.sub) {
+      setError("Not logged in")
+      return setLoading(false)
+    }
 
     setLoading(true)
     const url = new URL(window.location.origin + "/api/user/get_search_history")
@@ -56,7 +59,7 @@ const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
 
       <div className="flex flex-col gap-y-3">
         {
-          error == null && userRecentTitles == null
+          loading
             ?
             <div className="grid place-items-center py-4">
               <Oval
@@ -131,8 +134,8 @@ function SearchArea({ hasResult, loading, book_clicked_handler, queryData, setSe
         <div onClick={() => book_clicked_handler(book)} key={`search-book-${index}`}>
           <Book
             key={index}
-            auth={book.dewey_decimal}
-            desc={book.description}
+            auth={book.author ?? "Unknown Author"}
+            desc={book.description ?? book.dewey_decimal}
             name={book.title}
             img={book.cover_url}
           />
@@ -146,10 +149,10 @@ function SearchArea({ hasResult, loading, book_clicked_handler, queryData, setSe
 interface QueryResult {
   dewey_decimal: string
   title: string
-  description: string
   shelf_id: number
-  cover_url: string
-  
+  cover_url?: string
+  description?: string
+  author?: string
 }
 
 export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (a: number) => void }) {
