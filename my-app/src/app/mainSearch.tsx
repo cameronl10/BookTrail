@@ -139,6 +139,7 @@ interface QueryResult {
   description: string
   shelf_id: number
   cover_url: string
+  
 }
 
 export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (a: number) => void }) {
