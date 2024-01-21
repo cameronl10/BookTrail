@@ -1,24 +1,24 @@
-export default function navBar(props: {
+export default function Book(props: {
     auth: string;
     desc: string;
     name: string; 
     img: string | undefined; 
 }) {
     return (
-        <div className="w-full flex h-40 hover:bg-slate-700">
-            <div className="w-3/4 text-white">
-                <h1 className="text-lg font-bold whitespace-nowrap text-ellipsis overflow-hidden h-8">
+        <div className="flex flex-row gap-x-2 w-full h-40 bg-neutral-900 p-4 rounded-xl">
+            <div className="px-1 flex-shrink-0">
+                <img className="h-full w-20 object-cover" src={props.img} alt="cover"/>
+            </div>
+            <div className="text-white overflow-hidden">
+                <h1 className="text-lg font-bold whitespace-nowrap text-ellipsis overflow-hidden">
                     {props.name}
                 </h1>
-                <h2 className="text-base text-neutral-400">
+                <h2 className="text-base text-neutral-400 mb-4">
                     {props.auth}
                 </h2>
                 <h3 className="text-sm text-justify whitespace-normal text-ellipsis overflow-hidden h-24 text-neutral-400">
                    {props.desc}
                 </h3>
-            </div>
-            <div className="w-1/4 m-2 px-1 grid place-content-center">
-                <img className="max-w-full object-cover" src={props.img} alt="cover"/>
             </div>
         </div>
     )
