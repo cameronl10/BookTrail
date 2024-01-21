@@ -65,6 +65,8 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         mapView.Journey.draw(directions)
         mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
         mapView.StackedMaps.showOverview()
+
+        
     }
 
     const mapViewElement = useRef<HTMLDivElement>(null)
@@ -90,6 +92,26 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         ] as MappedinLocation[];
         if(!destinations || !startLocation)return;
         const directions = startLocation.directionsTo(
+            new MappedinDestinationSet(destinations));
+        mapView.Journey.draw(directions);   
+        mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
+        mapView.StackedMaps.showOverview()
+       })
+
+       mapView.on(E_SDK_EVENT.CLICK,({position}) => {
+        const coordinate = mapView.currentMap.createCoordinate(
+            position.latitude,
+            position.longitude
+        );
+
+        const nearestNode = coordinate.nearestNode;
+
+        const destinations = [
+            venue.locations.find((location) => location.name === 'Shelf A1'),
+            venue.locations.find((location) => location.name == 'Shelf Z1'),
+        ] as MappedinLocation[];
+        if(!destinations)return;
+        const directions = nearestNode.directionsTo(
             new MappedinDestinationSet(destinations));
         mapView.Journey.draw(directions);   
         mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
