@@ -54,6 +54,7 @@ export async function GET(req: Request){
     const url = new URL("https://openlibrary.org/search.json")
     url.searchParams.set("q", query_string)
     url.searchParams.set("limit", "50")
+    url.searchParams.set("fields", "ddc_sort,title,author_name,first_sentence,cover_i")
 
     for (let page = 1; matches.length < 1; page++) {
         if (page > 3) return new Response("Cannot Dewey's for this Query", {
@@ -67,13 +68,13 @@ export async function GET(req: Request){
         })
         // process and add data
         const data: OpenLibraryResponse = await response.json()
-        const valid_docs = data.docs.filter(doc => doc.ddc !== undefined && doc.ddc.length > 0 && !isNaN(parseFloat(doc.ddc[0])))
+        const valid_docs = data.docs.filter(doc => !!doc.ddc_sort && (doc.first_sentence?.length ?? 0 > 0))
         matches = matches.concat(valid_docs.map(match => ({
-            dewey_decimal: parseFloat(match.ddc![0]),
+            dewey_decimal: parseFloat(match.ddc_sort!),
             title: match.title,
-            shelf_id: Math.ceil(Math.round(parseFloat(match.ddc![0])) / (1000 / 168)),
-            cover_url: match.cover_i ? `https://covers.openlibrary.org/b/id/${match.cover_i}-L.jpg` : undefined,
-            description: "description", // TODO sort this out
+            shelf_id: Math.ceil(Math.round(parseFloat(match.ddc_sort!)) / (1000 / 168)),
+            cover_url: match.cover_i ? `https://covers.openlibrary.org/b/id/${match.cover_i}-M.jpg` : undefined,
+            description: match.first_sentence![0], // TODO sort this out
         })))
     }
 

@@ -22,6 +22,8 @@ const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
   const { user } = useUser();
   useEffect(() => {
     if(!user?.sub) return
+
+    setLoading(true)
     const url = new URL(window.location.origin + "/api/user/get_search_history")
     url.searchParams.set("sid", user.sub)
     url.searchParams.set("limit", "3");
@@ -31,12 +33,20 @@ const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
         history: string[]
       }
       const res = await fetch(url.toString())
-      if(res.status != 200) return setError("Couldn't fetch recent titles")
+      if(res.status != 200) {
+        setError("Couldn't fetch recent titles")
+        return setLoading(false)
+      }
       const data: FetchSearchHistoryResults = await res.json()
+
+
       setUserRecentTitles(data.history)
       if(data.history.length == 0) setError("No recent titles")
+      setLoading(false)
     })()
   }, [user])
+
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userRecentTitles, setUserRecentTitles] = useState<string[] | null>(null);
 
