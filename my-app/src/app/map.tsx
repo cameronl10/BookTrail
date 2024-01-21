@@ -48,7 +48,12 @@ const useMapView = (venue?: Mappedin, map_ref?: RefObject<HTMLDivElement>) => {
 }
 
 
-export default function Map() {
+export default function Map({mapString,setMapString}: {mapString: string, setMapString: (a: string) => void}) {
+
+    useEffect(() => {
+        console.log(mapString)
+    },[mapString])
+
     const mapViewElement = useRef<HTMLDivElement>(null);
     const venue = useVenue({
         mapId: process.env.NEXT_PUBLIC_MAPPEDIN_ID!,
