@@ -6,12 +6,14 @@ const Map = dynamic(() => import("./map"), {
   ssr: false,
 });
 
+
 export default function Home() {
   return (
     <div>
-      <Map />
-      <NavBar />
-      <MainSearch />
+      
+      <NavBar/>
+      <div id="app" className="absolute top-0 max-h-screen"></div>
+      <MainSearch/>
     </div>
   );
 }
