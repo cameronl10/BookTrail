@@ -23,7 +23,7 @@ export default function MainSearch({}) {
 
   enum SearchBarPositions {
     LOWER = 80,
-    UPPER = 30,
+    UPPER = 50,
   }
   const [topP, setTopP] = useState(SearchBarPositions.LOWER);
   const searchBarFocusToggle = (isFocus: boolean) => {
@@ -37,12 +37,12 @@ export default function MainSearch({}) {
 
   return (
     <div
-      className={`w-full flex-col bg-search-primary fixed rounded-t-3xl bg-slate-400 z-10 [&>div]:mx-4 pt-10 transition-[top]`}
+      className={`h-full w-full flex-col bg-search-primary fixed rounded-t-3xl bg-slate-400 z-10 [&>div]:mx-4 pt-10 transition-[top]`}
       style={{ top: `${topP}%` }}
     >
       <div className="relative">
         <svg
-          className="fill-black stroke-black top-[50%] translate-y-[-50%] left-3 absolute"
+          className="fill-black stroke-black top-[50%] translate-y-[-50%] left-3 absolute w-"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="21"
@@ -68,44 +68,32 @@ export default function MainSearch({}) {
 }
 
 const BookOfTheDay = () => (
-  <div>
-    <h1>Book of The Day</h1>
-    <div className="w-30 h-30">
+  <div className="bg-slate-500 m-4">
+    <h1 className="text-2xl font-bold">Book of The Day:</h1>
+    <div className="w-30 h-30 flex flex-row">
       <div className="w-[50px] h-[50px] m-6 bg-search-highlight rounded-full flex items-center justify-center">
-        <svg
-          className="z-10"
-          xmlns="http://www.w3.org/2000/svg"
-          width="23"
-          height="21"
-          viewBox="0 0 25 22"
-          fill="none"
-        >
-          <path
-            d="M18.75 2.61243H8.33334C7.22827 2.61243 6.16846 2.97487 5.38706 3.62003C4.60566 4.26519 4.16667 5.14021 4.16667 6.0526V16.3731C4.16667 17.2855 4.60566 18.1605 5.38706 18.8057C6.16846 19.4508 7.22827 19.8133 8.33334 19.8133H18.75C19.3025 19.8133 19.8324 19.6321 20.2231 19.3095C20.6138 18.9869 20.8333 18.5494 20.8333 18.0932V4.33251C20.8333 3.87632 20.6138 3.43881 20.2231 3.11623C19.8324 2.79365 19.3025 2.61243 18.75 2.61243ZM6.25001 6.0526C6.25001 5.5964 6.4695 5.15889 6.8602 4.83631C7.2509 4.51373 7.7808 4.33251 8.33334 4.33251H18.75V12.9329H8.33334C7.59901 12.9355 6.87916 13.1019 6.25001 13.4146V6.0526ZM8.33334 18.0932C7.7808 18.0932 7.2509 17.912 6.8602 17.5894C6.4695 17.2668 6.25001 16.8293 6.25001 16.3731C6.25001 15.9169 6.4695 15.4794 6.8602 15.1568C7.2509 14.8342 7.7808 14.653 8.33334 14.653H18.75V18.0932H8.33334ZM10.4167 7.77268H14.5833C14.8596 7.77268 15.1246 7.68207 15.3199 7.52078C15.5153 7.35949 15.625 7.14074 15.625 6.91264C15.625 6.68454 15.5153 6.46579 15.3199 6.3045C15.1246 6.14321 14.8596 6.0526 14.5833 6.0526H10.4167C10.1404 6.0526 9.87545 6.14321 9.6801 6.3045C9.48475 6.46579 9.37501 6.68454 9.37501 6.91264C9.37501 7.14074 9.48475 7.35949 9.6801 7.52078C9.87545 7.68207 10.1404 7.77268 10.4167 7.77268Z"
-            fill="white"
-          />
-        </svg>
+        <svg className="z-10" xmlns="http://www.w3.org/2000/svg" width="23" height="21" viewBox="0 0 25 22" fill="none"><path d="M18.75 2.61243H8.33334C7.22827 2.61243 6.16846 2.97487 5.38706 3.62003C4.60566 4.26519 4.16667 5.14021 4.16667 6.0526V16.3731C4.16667 17.2855 4.60566 18.1605 5.38706 18.8057C6.16846 19.4508 7.22827 19.8133 8.33334 19.8133H18.75C19.3025 19.8133 19.8324 19.6321 20.2231 19.3095C20.6138 18.9869 20.8333 18.5494 20.8333 18.0932V4.33251C20.8333 3.87632 20.6138 3.43881 20.2231 3.11623C19.8324 2.79365 19.3025 2.61243 18.75 2.61243ZM6.25001 6.0526C6.25001 5.5964 6.4695 5.15889 6.8602 4.83631C7.2509 4.51373 7.7808 4.33251 8.33334 4.33251H18.75V12.9329H8.33334C7.59901 12.9355 6.87916 13.1019 6.25001 13.4146V6.0526ZM8.33334 18.0932C7.7808 18.0932 7.2509 17.912 6.8602 17.5894C6.4695 17.2668 6.25001 16.8293 6.25001 16.3731C6.25001 15.9169 6.4695 15.4794 6.8602 15.1568C7.2509 14.8342 7.7808 14.653 8.33334 14.653H18.75V18.0932H8.33334ZM10.4167 7.77268H14.5833C14.8596 7.77268 15.1246 7.68207 15.3199 7.52078C15.5153 7.35949 15.625 7.14074 15.625 6.91264C15.625 6.68454 15.5153 6.46579 15.3199 6.3045C15.1246 6.14321 14.8596 6.0526 14.5833 6.0526H10.4167C10.1404 6.0526 9.87545 6.14321 9.6801 6.3045C9.48475 6.46579 9.37501 6.68454 9.37501 6.91264C9.37501 7.14074 9.48475 7.35949 9.6801 7.52078C9.87545 7.68207 10.1404 7.77268 10.4167 7.77268Z" fill="white"></path></svg>
       </div>
     </div>
     
     <div className="flex-col my-3">
-      <p className="text-white font-body fw-600 text-2xl">Kill a Mockingbird</p>
+      <p className="text-white font-body fw-600 text-xl font-bold">To Kill a Mockingbird</p>
       <p className="text-search-text font-body fw-600 text-l mb-2">
-        Harper Lee I Non-Fiction
+        Harper Lee - Non-Fiction
       </p>
-      <p className="text-search-text font-body fw-600 text-l pr-3">
+      <p className="text-search-text font-body fw-600 text-l pr-3 text-justify">
         Set in small-town Alabama, the novel is a bildungsroman, or
         coming-of-age story, and chronicles the childhood of Scout and Jem Finch
-        as their father Atticus defends a Black man falsely accused of rape
+        as their father Atticus defends a Black man falsely accus...
       </p>
     </div>
   </div>
 );
 
 const Recents = () => (
-  <div>
-    <h1 className="text-2xl">
-      Recents
+  <div className="bg-slate-500 m-4">
+    <h1 className="text-2xl font-bold">
+      Recents:
     </h1>
 
     <div className="w-11/12 h-[2px] bg-search-light mx-auto opacity-50 "></div>
@@ -124,7 +112,7 @@ const Recents = () => (
         />
       </svg>
       <h2 className="text-search-text fw-600 text-2xl font-body my-3">
-        The 7 Habits of highly effecitve..
+        The 7 Habits of highly effecti..
       </h2>
     </div>
 
