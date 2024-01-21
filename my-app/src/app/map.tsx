@@ -4,6 +4,8 @@ import {
     E_SDK_EVENT,
     getVenueMaker,
     Mappedin,
+    MappedinDestinationSet,
+    MappedinLocation,
     MapView,
     showVenue,
     TGetVenueMakerOptions,
@@ -61,7 +63,7 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         if (!startLocation || !endLocation) return
         const directions = startLocation.directionsTo(endLocation)
         mapView.Journey.draw(directions)
-        mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 30 })
+        mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
         mapView.StackedMaps.showOverview()
     }
 
@@ -78,6 +80,23 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
         path_to_shelf()
     }, [shelfNumber])
 
+    useEffect(() => {
+        if(!mapView || !venue)return;
+       mapView.on(E_SDK_EVENT.MAP_CHANGED,() => {
+        const startLocation = venue.locations.find((location) => location.name === "240A");
+        const destinations = [
+            venue.locations.find((location) => location.name === 'Shelf A1'),
+            venue.locations.find((location) => location.name == 'Shelf Z1'),
+        ] as MappedinLocation[];
+        if(!destinations || !startLocation)return;
+        const directions = startLocation.directionsTo(
+            new MappedinDestinationSet(destinations));
+        mapView.Journey.draw(directions);   
+        mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
+        mapView.StackedMaps.showOverview()
+       })
+
+    },[mapView])
 
     return (
         <div id="map_element" ref={mapViewElement} className="w-screen h-screen">
