@@ -47,6 +47,7 @@ export async function GET(req: Request){
         title: string
         description: string
         shelf_id: number
+        cover_url?: string
     }
     let matches: RetMatch[] = []
 
@@ -70,9 +71,10 @@ export async function GET(req: Request){
         matches = matches.concat(valid_docs.map(match => ({
             dewey_decimal: parseFloat(match.ddc![0]),
             title: match.title,
+            shelf_id: Math.ceil(Math.round(parseFloat(match.ddc![0])) / (1000 / 168)),
+            cover_url: match.cover_i ? `https://covers.openlibrary.org/b/id/${match.cover_i}-L.jpg` : undefined,
             description: "description", // TODO sort this out
-            shelf_id: Math.ceil(Math.round(parseFloat(match.ddc![0])) / (1000 / 168))
-        } as RetMatch)))
+        })))
     }
 
     await mongodb_log_task; // make sure that mongo is done
