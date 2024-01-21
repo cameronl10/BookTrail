@@ -1,7 +1,7 @@
 'use client'
 import {useEffect } from "react";
-import NavBar from "./components/navBar"
-import MainSearch from "./components/mainSearch"
+import NavBar from "~/components/navBar"
+import MainSearch from "~/components/mainSearch"
 
 import {
   E_SDK_EVENT,
