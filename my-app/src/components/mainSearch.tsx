@@ -28,7 +28,6 @@ export default function MainSearch({updateShelfNumber}) {
       return;
     }
     const data = await response.json()
-    updateShelfNumber(shelfNumToSend)
     setShowResult(true);
     setData(data.matches);
   }
@@ -84,14 +83,18 @@ export default function MainSearch({updateShelfNumber}) {
         ) : (
           <>
           {responseData.map((book,index) => (
+          <div                 onClick = {() => 
+            updateShelfNumber(book.shelf_id)
+          }>
           <Book
                 key={index}
                 auth={book.dewey_decimal} 
                 desc={book.description} 
                 name={book.title} 
                 img={book.cover_url}
+
           />
-          
+          </div>
           ))}
         </>
         )}

@@ -3,6 +3,7 @@ export default function Book(props: {
     desc: string;
     name: string; 
     img: string | undefined; 
+    onClick?: () => any;
 }) {
     return (
         <div className="flex flex-row gap-x-2 w-full h-40 bg-neutral-900 p-4 rounded-xl">
