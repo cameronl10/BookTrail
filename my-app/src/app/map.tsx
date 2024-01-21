@@ -50,6 +50,6 @@ export default function Map() {
     const mapView = useMapView(venue, mapViewElement);
 
     return (
-        <div id="map_element" ref={mapViewElement} className="absolute top-0 max-h-screen"></div>
+        <div id="map_element" ref={mapViewElement} className="w-screen h-screen"></div>
     )
 }

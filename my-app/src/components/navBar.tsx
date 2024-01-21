@@ -2,11 +2,9 @@ import LoginButton from "./loginButton";
 
 export default function navBar() {
     return (
-    <div>
-        <div className="w-screen flex justify-between content-center items-center">
-            <img className="ml-3 w-32" src='logo.png' alt="../logo.png"/>
+        <div className="fixed top-0 inset-x-0 flex justify-between items-center z-10 p-2">
+            <img className="w-32" src='logo.png' alt="Logo Image"/>
             <LoginButton />
         </div>
-    </div>
     )
 };

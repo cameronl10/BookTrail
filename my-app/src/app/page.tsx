@@ -8,9 +8,9 @@ const Map = dynamic(() => import("./map"), {
 
 export default function Home() {
   return (
-    <div className="w-screen h-screen">
-      <NavBar />
+    <div>
       <Map />
+      <NavBar />
       <MainSearch />
     </div>
   );
