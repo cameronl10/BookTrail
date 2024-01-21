@@ -16,4 +16,4 @@
 
 ## The problem:
 
-Libraries have an immense amount to book and other resources for us to enjoy, yet their intimidating structure, also with the sheer amount of shelves hinder people's ability to find the information they want. BookTrail helps to find any book avaliable with ease, with the help of Mappedin AI pathfinding tools, with open library API will.
+Libraries have an immense amount to book and other resources for us to enjoy, yet their intimidating structure, also with the sheer amount of shelves hinder people's ability to find the information they want. BookTrail helps to find any book avaliable with ease, with the help of Mappedin AI pathfinding tools.
