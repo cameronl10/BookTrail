@@ -1,19 +1,19 @@
 ![BookTrail](/my-app/public/logo.png "BookTrail")
 
-# BookTrail
+# 📚BookTrail📚   
 ![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=nwhacks-2024)
 
-### Access a world of knowledge around you
+### 🤯Access a world of knowledge around you🤯
 
 ## Team Members:
 
-- Cameron
+- Cameron 😎
 
-- Edwin
+- Edwin 🏎️
 
-- Jay
+- Jay  🥟
 
-- Nicholas
+- Nicholas 🎌
 
 ## The problem:
 
