@@ -1,16 +1,6 @@
 "use client";
-import { FormEventHandler, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "./ui/drawer";
+import { FormEventHandler, useState } from "react";
+import Book from "./book";
 import { useUser } from "@auth0/nextjs-auth0/client";
 
 export default function MainSearch({updateShelfNumber}) {
@@ -59,12 +49,12 @@ export default function MainSearch({updateShelfNumber}) {
 
   return (
     <div
-      className={"w-full flex flex-col bg-search-primary fixed rounded-t-3xl bg-slate-400 z-10 [&>div]:mx-4 pt-10 transition-[top] bottom-0"}
-      style={{ top: `${topP}%` }}
+      className={"w-full flex flex-col bg-search-primary fixed rounded-t-3xl bg-slate-800 z-10 [&>div]:mx-4 pt-10 transition-[top] bottom-0"}
+      style={{ top: ` 50%` }}
     >
       <div className="relative mb-4">
         <svg
-          className="fill-black stroke-black top-[50%] translate-y-[-50%] left-3 absolute w-"
+          className="fill-black top-[50%] translate-y-[-50%] left-3 absolute w-8"
           xmlns="http://www.w3.org/2000/svg"
           width="24"
           height="21"
@@ -85,6 +75,7 @@ export default function MainSearch({updateShelfNumber}) {
         </form>
       </div>
       <div className="overflow-y-scroll mx-4">
+
         <BookOfTheDay />
         <Recents />
       </div>
@@ -93,36 +84,20 @@ export default function MainSearch({updateShelfNumber}) {
 }
 
 const BookOfTheDay = () => (
-  <div className="bg-slate-500">
-    <h1 className="text-2xl font-bold">Book of The Day:</h1>
-    <div className="w-30 h-30 flex flex-row">
-      <div className="w-[50px] h-[50px] m-6 bg-search-highlight rounded-full flex items-center justify-center">
-        <svg className="z-10" xmlns="http://www.w3.org/2000/svg" width="23" height="21" viewBox="0 0 25 22" fill="none"><path d="M18.75 2.61243H8.33334C7.22827 2.61243 6.16846 2.97487 5.38706 3.62003C4.60566 4.26519 4.16667 5.14021 4.16667 6.0526V16.3731C4.16667 17.2855 4.60566 18.1605 5.38706 18.8057C6.16846 19.4508 7.22827 19.8133 8.33334 19.8133H18.75C19.3025 19.8133 19.8324 19.6321 20.2231 19.3095C20.6138 18.9869 20.8333 18.5494 20.8333 18.0932V4.33251C20.8333 3.87632 20.6138 3.43881 20.2231 3.11623C19.8324 2.79365 19.3025 2.61243 18.75 2.61243ZM6.25001 6.0526C6.25001 5.5964 6.4695 5.15889 6.8602 4.83631C7.2509 4.51373 7.7808 4.33251 8.33334 4.33251H18.75V12.9329H8.33334C7.59901 12.9355 6.87916 13.1019 6.25001 13.4146V6.0526ZM8.33334 18.0932C7.7808 18.0932 7.2509 17.912 6.8602 17.5894C6.4695 17.2668 6.25001 16.8293 6.25001 16.3731C6.25001 15.9169 6.4695 15.4794 6.8602 15.1568C7.2509 14.8342 7.7808 14.653 8.33334 14.653H18.75V18.0932H8.33334ZM10.4167 7.77268H14.5833C14.8596 7.77268 15.1246 7.68207 15.3199 7.52078C15.5153 7.35949 15.625 7.14074 15.625 6.91264C15.625 6.68454 15.5153 6.46579 15.3199 6.3045C15.1246 6.14321 14.8596 6.0526 14.5833 6.0526H10.4167C10.1404 6.0526 9.87545 6.14321 9.6801 6.3045C9.48475 6.46579 9.37501 6.68454 9.37501 6.91264C9.37501 7.14074 9.48475 7.35949 9.6801 7.52078C9.87545 7.68207 10.1404 7.77268 10.4167 7.77268Z" fill="white"></path></svg>
-      </div>
-    </div>
-    
-    <div className="flex-col my-3">
-      <p className="text-white font-body fw-600 text-xl font-bold">To Kill a Mockingbird</p>
-      <p className="text-search-text font-body fw-600 text-l mb-2">
-        Harper Lee - Non-Fiction
-      </p>
-      <p className="text-search-text font-body fw-600 text-l pr-3 text-justify">
-        Set in small-town Alabama, the novel is a bildungsroman, or
-        coming-of-age story, and chronicles the childhood of Scout and Jem Finch
-        as their father Atticus defends a Black man falsely accus...
-      </p>
-    </div>
+  <div className="bg-slate-800 py-3">
+    <h1 className="text-2xl font-bold text-white py-1">Book of The Day:</h1>
+    <Book auth={"Stephen Covey"} desc={"The 7 Habits of Highly Effective People, first published in 1989, is a business and self-help book written by Stephen R. Covey. Covey defines effectiveness as the balance of obtaining desirable results with caring for that which produces those results."} name={"The 7 Habits of Highly Effective People"} img={"https://m.media-amazon.com/images/I/51ST4ws-CgL._SY445_SX342_.jpg"}/>
   </div>
 );
 
 const Recents = () => (
-  <div className="bg-slate-500">
-    <h1 className="text-2xl font-bold">
+  <div className="bg-slate-800 rounded text-neutral-400">
+    <h1 className="text-2xl font-bold text-white">
       Recents:
     </h1>
 
-    <div className="w-11/12 h-[2px] bg-search-light mx-auto opacity-50 "></div>
-    <div className="flex items-center w-11/12 mx-auto">
+    <div className="w-11/12 h-2.5 bg-search-light mx-auto opacity-50 "></div>
+    <div className="flex items-center w-11/12 mx-auto bg-slate-700 rounded-full">
       <svg
         className=" mr-3 text-search-text"
         xmlns="http://www.w3.org/2000/svg"
@@ -136,13 +111,13 @@ const Recents = () => (
           fill="#A1A4AB"
         />
       </svg>
-      <h2 className="text-search-text fw-600 text-2xl font-body my-3">
+      <h2 className="text-search-text fw-600 text-l font-body my-3">
         The 7 Habits of highly effecti..
       </h2>
     </div>
 
-    <div className="w-11/12 h-[2px] bg-search-light mx-auto opacity-50 "></div>
-    <div className="flex items-center w-11/12 mx-auto">
+    <div className="w-11/12 h-2.5 bg-search-light mx-auto opacity-50 "></div>
+    <div className="flex items-center w-11/12 mx-auto bg-slate-700 rounded-full">
       <svg
         className=" mr-3 text-search-text"
         xmlns="http://www.w3.org/2000/svg"
@@ -156,13 +131,13 @@ const Recents = () => (
           fill="#A1A4AB"
         />
       </svg>
-      <h2 className="text-search-text fw-600 text-2xl font-body my-3">
+      <h2 className="text-search-text fw-600 text-l font-body my-3">
         Complete Pokedex
       </h2>
     </div>
 
-    <div className="w-11/12 h-[2px] bg-search-light mx-auto opacity-50 "></div>
-    <div className="flex items-center w-11/12 mx-auto">
+    <div className="w-11/12 h-2.5 bg-search-light mx-auto opacity-50 "></div>
+    <div className="flex items-center w-11/12 mx-auto bg-slate-700 rounded-full">
       <svg
         className=" mr-3 text-search-text"
         xmlns="http://www.w3.org/2000/svg"
@@ -176,7 +151,7 @@ const Recents = () => (
           fill="#A1A4AB"
         />
       </svg>
-      <h2 className="text-search-text fw-600 text-2xl font-body my-3">
+      <h2 className="text-search-text fw-600 text-l font-body my-3">
         BLACKPINK - The Movie
       </h2>
     </div>
