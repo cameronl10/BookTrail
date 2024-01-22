@@ -13,6 +13,7 @@ import {
 	MapView,
 	showVenue,
 	TGetVenueMakerOptions,
+	TMapClickEvent,
 	TMapViewOptions,
 } from "@mappedin/mappedin-js"
 import "@mappedin/mappedin-js/lib/mappedin.css"
@@ -101,36 +102,32 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 		if (!initial_node) console.warn("initial node is invalid")
 		else setUserLocation(initial_node) // just a default
 
-		mapView.on(E_SDK_EVENT.CLICK, ({ position }) => {
+		const clickHandler = ({ position }: TMapClickEvent) => {
+			console.log(mapView.currentMap.createCoordinate(position.latitude, position.longitude).nearestNode)
 			const coordinate = mapView.currentMap.createCoordinate(position.latitude, position.longitude)
 			const nearestNode = coordinate.nearestNode
 			setUserLocation(nearestNode)
-		})
+		}
 
-		mapView.on(E_SDK_EVENT.MAP_CHANGED, () => {
-			if(hasRenderedInitPath.current) return
+		const mapChangedHandler = () => {
+			if (hasRenderedInitPath.current) return
 			console.log("map changed")
-			const startLocation = venue.locations.find((location) => location.name === "Ike's Cafe")
-			const destinations = [
-				venue.locations.find((location) => location.name === 'Shelf A1'),
-				venue.locations.find((location) => location.name == 'Shelf Z1'),
-			] as MappedinLocation[]
-			if (!destinations || !startLocation) return
-			const directions = startLocation.directionsTo(new MappedinDestinationSet(destinations))
-			mapView.Journey.draw(directions, {
-				pathOptions: {
-					nearRadius: 2.5,
-					farRadius: 2.5,
-				},
-				inactivePathOptions: {
-					nearRadius: 2,
-					farRadius: 2,
-					color: "lightblue",
-				},
-			})
-			toggle_stack()
+			const startLocation = venue.locations.find((location) => location.name === "Ike's Cafe")!
+			const endLocation = venue.locations.find((location) => location.name === 'Shelf A1') ?? 
+				venue.locations.find((location) => location.name == 'Shelf Z1') ?? null
+			setUserLocation(startLocation.nodes[0])
+			setShelfLocation(endLocation!)
+			setStackOn(true)
 			hasRenderedInitPath.current = true
-		})
+		}
+
+		mapView.on(E_SDK_EVENT.CLICK, clickHandler)
+		mapView.on(E_SDK_EVENT.MAP_CHANGED, mapChangedHandler)
+
+		return () => {
+			mapView.off(E_SDK_EVENT.CLICK, clickHandler)
+			mapView.off(E_SDK_EVENT.MAP_CHANGED, mapChangedHandler)
+		}
 	}, [mapView, venue])
 
 	//labels
@@ -147,7 +144,7 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 	const [shelfLocation, setShelfLocation] = useState<MappedinLocation>()
 	useEffect(() => {
 		if (!mapView) return
-		if (!userLocation || !shelfLocation) return console.warn("userLocation or shelfLocation is null")
+		if (!userLocation || !shelfLocation) return console.warn(userLocation, shelfLocation)
 		const directions = userLocation.directionsTo(shelfLocation)
 		if (directions.path.length == 0 || directions.distance == 0) return console.warn("Direction not valid")
 		mapView.Journey.draw(directions, {
@@ -168,35 +165,44 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 
 
 	const [stackOn, setStackOn] = useState(false)
-	const toggle_stack = async () => {
-		if (mapView === undefined) return
-		if (stackOn) {
-			await mapView.StackedMaps.disable()
-			setStackOn(false)
-		}
-		else {
-			try {
-				await mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 30 })
-				await mapView.StackedMaps.showOverview()
-				setStackOn(true)
-			} catch(e) {
-				console.error("stack toggle error:", e)
+	useEffect(() => {
+		(async () => {
+			if (mapView === undefined) return
+			if (stackOn == false) {
+				await mapView.StackedMaps.disable()
 				setStackOn(false)
 			}
-		}
-	}
+			else {
+				try {
+					await mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 30 })
+					await mapView.StackedMaps.showOverview()
+					mapView.Camera.interactions.set({zoom: true})
+					setStackOn(true)
+				} catch (e) {
+					console.error("stack toggle error:", e)
+					setStackOn(false)
+				}
+			}
+		})()
+	}, [stackOn])
 
 	return (
 		<div ref={elementRef} className="w-screen h-screen relative">
 			<div className="absolute top-36 left-2 z-50 flex flex-col gap-y-2">
 				<button className="bg-white p-2" onClick={toggle_labels}>Toggle Labels</button>
-				<button className="bg-white p-2" onClick={toggle_stack}>Toggle Stack</button>
+				<button className="bg-white p-2" onClick={() => setStackOn(s => !s)}>Toggle Stack</button>
 				<div className="flex flex-col text-xl border-rounded-md">
 					{
 						[3, 2, 1, 0].map(l => (
 							<button
 								className="w-8 h-8 bg-slate-100 m-1 p-0 text-center rounded-sm"
-								onClick={() => { setLevel(l) }} key={`level-button-${l}`}
+								onClick={() => {
+									setLevel(() => {
+										setStackOn(false)
+										return l
+									})
+								}}
+								key={`level-button-${l}`}
 							>
 								{l + 1}
 							</button>
