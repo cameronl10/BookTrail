@@ -1,13 +1,12 @@
 "use client";
-import { FormEventHandler, UIEventHandler, useEffect, useRef, useState } from "react";
-import Book from "~/components/book";
-import SearchIcon from "~/components/searchIcon";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
+import Book from "~/components/searchDrawer/book";
+import {SearchIcon, XIcon} from "~/components/icons";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import XIcon from "~/components/xicon";
 import { Oval } from "react-loader-spinner";
 
 const BookOfTheDay = ({updateShelfNumber}: {updateShelfNumber: (n: number)=>void}) => (
-  <div className="bg-slate-800 py-3">
+  <div className="py-3">
     <h1 className="text-2xl font-bold text-white mb-2">Book of The Day:</h1>
     <div onClick={() => updateShelfNumber(27)} className="hover:cursor-pointer">
       <Book
@@ -23,7 +22,6 @@ const BookOfTheDay = ({updateShelfNumber}: {updateShelfNumber: (n: number)=>void
 const Recents = ({setSearchBox}: {setSearchBox: (s: string)=>void}) => {
   const { user } = useUser();
   useEffect(() => {
-    console.log(user)
     if(!user?.sub) {
       setError("Not logged in")
       return setLoading(false)
@@ -117,18 +115,18 @@ function SearchArea({ hasResult, loading, error, book_clicked_handler, queryData
     )
   }
 
+  if(error) {
+    return (
+      <p className="text-white"> {error} </p>
+    )
+  }
+
   if (!hasResult) {
     return (
       <>
         <BookOfTheDay updateShelfNumber={updateShelfNumber} />
         <Recents setSearchBox={setSearchBox}/>
       </>
-    )
-  }
-
-  if(error) {
-    return (
-      <p className="text-white"> {error} </p>
     )
   }
 
@@ -155,6 +153,28 @@ function SearchArea({ hasResult, loading, error, book_clicked_handler, queryData
   )
 }
 
+const SearchBox = ({query_books, setQuery, setHasResult, searchBoxRef}:
+  {query_books: FormEventHandler<HTMLFormElement>, setQuery: (s: string) => void, setHasResult: (b: boolean) => void, searchBoxRef: any}) => {
+  return (
+    <div className="relative">
+        <SearchIcon className="absolute w-6 h-6 stroke-neutral-400 left-3 top-[50%] translate-y-[-50%]" strokeWidth={2} />
+        <form className="flex items-center gap-x-2" onSubmit={query_books}>
+          <input type="search"
+            className="px-4 py-2 pl-12 w-full text-xl font-body rounded-xl bg-slate-700 text-neutral-300 focus:outline-none focus:ring-4 duration-600 ease-in-out flex-1"
+            placeholder="Search BookTrail"
+            onChange={(e) => {
+              const new_query = e.target.value
+              setQuery(new_query)
+              new_query.length == 0 && setHasResult(false)
+            }}
+            ref={searchBoxRef}
+          />
+          {/* <XIcon className="w-10 h-10 stroke-neutral-400" strokeWidth={2} onClick={() => setTopP(SearchBarPositions.LOWER)} /> */}
+        </form>
+      </div>
+  )
+}
+
 
 interface QueryResult {
   dewey_decimal: string
@@ -177,7 +197,6 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
   const query_books: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
     setLoading(true)
-    setTopP(SearchBarPositions.UPPER)
     setQueryError(null)
 
     const url = new URL(window.location.origin + "/api/findbook")
@@ -198,60 +217,31 @@ export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (
     setLoading(false);
     setQueryData(data.matches);
   }
-  const setSearchBox = (s: string) => {
-    if (searchBoxRef.current == null) return;
-    searchBoxRef.current.value = s;
-    setQuery(s);
-  }
-
-  enum SearchBarPositions { UPPER = "200px", LOWER = "500px", }
-  const [topP, setTopP] = useState(SearchBarPositions.LOWER);
-  const SCROLL_LIMIT = 10;
-  const scroll_collapse_handler: UIEventHandler<HTMLDivElement> = (e) => {
-    const mainScrollArea = e.currentTarget
-    if (!mainScrollArea) return;
-    const scrollPos = mainScrollArea.scrollTop;
-    if (scrollPos > SCROLL_LIMIT) setTopP(SearchBarPositions.UPPER)
-  }
 
   return (
     <div
-      className="w-full flex flex-col fixed bg-slate-800 bg-opacity-80 backdrop-blur-md z-10 [&>div]:mx-4 rounded-t-3xl pt-8 gap-y-4
-        transition-[top] bottom-0"
-      style={{ top: topP }}
+      className="
+        w-full flex flex-col gap-y-4 rounded-t-3xl overflow-clip
+        fixed transition-[top] z-10
+        bg-slate-800 bg-opacity-80 backdrop-blur-md
+        [&>div]:mx-4 pt-8 pb-10
+      "
+      style={{ top: "10%" }}
     >
-      <div className="relative">
-        <SearchIcon className="absolute w-6 h-6 stroke-neutral-400 left-3 top-[50%] translate-y-[-50%]" strokeWidth={2} />
-        <form className="flex items-center gap-x-2" onSubmit={query_books}>
-          <input type="search"
-            className="px-4 py-2 pl-12 w-full text-xl font-body rounded-xl bg-slate-700 text-neutral-300 focus:outline-none focus:ring-4 duration-600 ease-in-out flex-1"
-            placeholder="Search BookTrail"
-            onChange={(e) => {
-              const new_query = e.target.value
-              setQuery(new_query)
-              new_query.length == 0 && setHasResult(false)
-            }}
-            ref={searchBoxRef}
-          />
-          <XIcon className="w-10 h-10 stroke-neutral-400" strokeWidth={2} onClick={() => setTopP(SearchBarPositions.LOWER)} />
-        </form>
-      </div>
+      <SearchBox setHasResult={setHasResult} setQuery={setQuery} query_books={query_books} searchBoxRef={searchBoxRef}/>
 
       {/* SCROLL AREA */}
-      <div className="overflow-y-scroll pb-8" onScroll={scroll_collapse_handler}>
-        <SearchArea
-          book_clicked_handler={(book: QueryResult) => {
-            setTopP(SearchBarPositions.LOWER)
-            updateShelfNumber(book.shelf_id)
-          }}
-          hasResult={hasResult}
-          queryData={queryData}
-          loading={loading}
-          setSearchBox={setSearchBox}
-          error={queryError}
-          updateShelfNumber={updateShelfNumber}
-        />
-      </div>
+      <SearchArea
+        book_clicked_handler={(book: QueryResult) => {
+          updateShelfNumber(book.shelf_id)
+        }}
+        setSearchBox={(s: string) => {
+          if (searchBoxRef.current == null) return;
+          searchBoxRef.current.value = s;
+          setQuery(s);
+        }}
+        hasResult={hasResult} queryData={queryData} loading={loading} error={queryError} updateShelfNumber={updateShelfNumber}
+      />
     </div>
   );
 }
