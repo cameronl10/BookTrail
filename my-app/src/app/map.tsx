@@ -104,7 +104,6 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 		})
 
 		mapView.on(E_SDK_EVENT.MAP_CHANGED, () => {
-			console.log("map changed", venue.locations.map(l=>l.name))
 			const startLocation = venue.locations.find((location) => location.name === "Ike's Cafe")
 			const destinations = [
 				venue.locations.find((location) => location.name === 'Shelf A1'),
