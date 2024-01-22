@@ -3,9 +3,9 @@ import SearchBox from "./searchbox";
 import SearchArea from "./searcharea";
 import useBookQuery, { QueryResult } from "./useBookQuery";
 
-export default function MainSearch({ updateShelfNumber }: { updateShelfNumber: (a: number) => void }) {
+export default function SearchDrawer({ updateShelfNumber }: { updateShelfNumber: (a: number) => void }) {
   const {setHasResult, setQuery, query_books, searchBoxRef, hasResult, queryData, loading, queryError} = useBookQuery();
-
+  
   return (
     <div
       className="

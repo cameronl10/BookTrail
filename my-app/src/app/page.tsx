@@ -1,7 +1,7 @@
 'use client'
 
 import NavBar from "~/components/nav/navBar"
-import MainSearch from "~/components/searchDrawer/mainSearch"
+import SearchDrawer from "~/components/searchDrawer/mainSearch"
 import dynamic from "next/dynamic";
 import { useState } from "react"
 const Map = dynamic(() => import("./map"), {
@@ -14,7 +14,7 @@ export default function Home() {
     <div className="relative">
       {/* <Map shelfNumber={shelfNumber} /> */}
       <NavBar />
-      <MainSearch updateShelfNumber={setShelfNumber} />
+      <SearchDrawer updateShelfNumber={setShelfNumber} />
     </div>
   );
 }
