@@ -15,15 +15,6 @@ export default function Home() {
       <Map shelfNumber={shelfNumber} />
       <NavBar />
       {/* <MainSearch updateShelfNumber={setShelfNumber} /> */}
-
-      <div className="fixed bottom-10 left-[50%] translate-x-[-50%]">
-        <button className="bg-blue-400 p-4 rounded-lg" onClick={()=>{
-          const newNumber = Math.floor(Math.random() * 100)
-          setShelfNumber(newNumber)
-        }}>
-          Random Shelf Number
-        </button>
-      </div>
     </div>
   );
 }

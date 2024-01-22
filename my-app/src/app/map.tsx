@@ -34,8 +34,7 @@ const useMapView = (venue?: Mappedin, options?: TMapViewOptions) => {
 	const [level, setLevel] = useState(0)
 
 	useEffect(() => {
-		if (!mapView || !venue || !sortedVenueMaps)
-			return console.log("mapView, venue, or sortedVenueMaps is null", mapView, venue, sortedVenueMaps)
+		if (!mapView || !venue || !sortedVenueMaps) return
 		mapView.setMap(sortedVenueMaps[level].id)
 	}, [level])
 
@@ -47,7 +46,7 @@ const useMapView = (venue?: Mappedin, options?: TMapViewOptions) => {
 			//======================================================================================= rendering mutual exclusion start
 			const _mapView = await showVenue(el, venue, options)
 			const _sortedVenueMaps = venue.maps.sort(
-				(a, b) => parseInt(a.id) - parseInt(b.id)
+				(a, b) => parseInt(a.name) - parseInt(b.name)
 			)
 			_mapView.setMap(_sortedVenueMaps[0].id)
 			setMapView(_mapView)
@@ -93,10 +92,15 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 		xRayPath: true,
 	})
 
+
+	const hasRenderedInitPath = useRef(false)
 	useEffect(() => {
 		if (!mapView || !venue) return
 
-		setUserLocation(venue.locations.find(l => l.name === "240A")?.nodes[0]) // just a default
+		const initial_node = venue.locations.find(l => l.name === "240A")?.nodes[0]
+		if (!initial_node) console.warn("initial node is invalid")
+		else setUserLocation(initial_node) // just a default
+
 		mapView.on(E_SDK_EVENT.CLICK, ({ position }) => {
 			const coordinate = mapView.currentMap.createCoordinate(position.latitude, position.longitude)
 			const nearestNode = coordinate.nearestNode
@@ -104,6 +108,8 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 		})
 
 		mapView.on(E_SDK_EVENT.MAP_CHANGED, () => {
+			if(hasRenderedInitPath.current) return
+			console.log("map changed")
 			const startLocation = venue.locations.find((location) => location.name === "Ike's Cafe")
 			const destinations = [
 				venue.locations.find((location) => location.name === 'Shelf A1'),
@@ -113,13 +119,17 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 			const directions = startLocation.directionsTo(new MappedinDestinationSet(destinations))
 			mapView.Journey.draw(directions, {
 				pathOptions: {
-					color: "blue",
-					nearRadius: 1,
-				}
+					nearRadius: 2.5,
+					farRadius: 2.5,
+				},
+				inactivePathOptions: {
+					nearRadius: 2,
+					farRadius: 2,
+					color: "lightblue",
+				},
 			})
-			mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 20 })
-			mapView.StackedMaps.showOverview()
-			// mapView.Journey.clear()
+			toggle_stack()
+			hasRenderedInitPath.current = true
 		})
 	}, [mapView, venue])
 
@@ -136,9 +146,10 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 	const [userLocation, setUserLocation] = useState<MappedinNode>()
 	const [shelfLocation, setShelfLocation] = useState<MappedinLocation>()
 	useEffect(() => {
-		if (!mapView || !userLocation || !shelfLocation) return
+		if (!mapView) return
+		if (!userLocation || !shelfLocation) return console.warn("userLocation or shelfLocation is null")
 		const directions = userLocation.directionsTo(shelfLocation)
-		if (directions.path.length == 0 || directions.distance == 0) return
+		if (directions.path.length == 0 || directions.distance == 0) return console.warn("Direction not valid")
 		mapView.Journey.draw(directions, {
 			pathOptions: {
 				color: "blue",
@@ -146,28 +157,48 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 				farRadius: 0,
 			},
 		})
-		mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 30 })
-		mapView.StackedMaps.showOverview()
 	}, [userLocation, shelfLocation])
 	useEffect(() => {
 		if (!shelfNumber) return console.log("shelf number changed to no shelf number")
 		console.log("shelf number changed to ", shelf_number_to_code(shelfNumber))
+
 		if (!venue) return;
 		setShelfLocation(venue.locations.find(l => l.name === shelf_number_to_code(shelfNumber)))
 	}, [shelfNumber])
 
+
+	const [stackOn, setStackOn] = useState(false)
+	const toggle_stack = async () => {
+		if (mapView === undefined) return
+		if (stackOn) {
+			await mapView.StackedMaps.disable()
+			setStackOn(false)
+		}
+		else {
+			try {
+				await mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 30 })
+				await mapView.StackedMaps.showOverview()
+				setStackOn(true)
+			} catch(e) {
+				console.error("stack toggle error:", e)
+				setStackOn(false)
+			}
+		}
+	}
+
 	return (
 		<div ref={elementRef} className="w-screen h-screen relative">
-			<div className="absolute top-36 left-10">
-				<button onClick={toggle_labels}>Toggle Labels</button>
+			<div className="absolute top-36 left-2 z-50 flex flex-col gap-y-2">
+				<button className="bg-white p-2" onClick={toggle_labels}>Toggle Labels</button>
+				<button className="bg-white p-2" onClick={toggle_stack}>Toggle Stack</button>
 				<div className="flex flex-col text-xl border-rounded-md">
 					{
 						[3, 2, 1, 0].map(l => (
 							<button
 								className="w-8 h-8 bg-slate-100 m-1 p-0 text-center rounded-sm"
-								onClick={() => setLevel(l)} key={`level-button-${l}`}
+								onClick={() => { setLevel(l) }} key={`level-button-${l}`}
 							>
-								{l}
+								{l + 1}
 							</button>
 						))
 					}

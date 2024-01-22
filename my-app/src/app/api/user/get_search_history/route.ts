@@ -20,8 +20,6 @@ export async function GET(req: Request) {
 
     try {
         await client.connect();
-        console.log("[get_search_history] connected to mongodb")
-        console.log(uri())
     } catch (e) {
         return new Response(`[get_search_history] could not connect to mongodb, ${JSON.stringify(e)}`, {
             status: 500,
