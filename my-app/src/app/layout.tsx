@@ -20,9 +20,14 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
       <meta name="msapplication-TileColor" content="#da532c" />
       <meta name="msapplication-config" content="favicon/browserconfig.xml" />
       <meta name="theme-color" content="#ffffff" />
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+      <body>
       <UserProvider>
-        <body>{children}</body>
+        {children}
       </UserProvider>
+      </body>
     </html>
   );
 }
