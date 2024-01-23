@@ -75,7 +75,7 @@ export async function GET(req: Request){
             title: match.title,
             shelf_id: Math.ceil(Math.round(parseFloat(match.ddc_sort!)) / (1000 / 168)),
             cover_url: match.cover_i ? `https://covers.openlibrary.org/b/id/${match.cover_i}-M.jpg` : undefined,
-            description: match.first_sentence ? match.first_sentence[0]: undefined, // TODO sort this out
+            description: match.first_sentence ? match.first_sentence[0]: undefined,
             author: match.author_name ? match.author_name[0] : undefined
         })))
     }

@@ -14,9 +14,7 @@ export default function Home() {
     <div className="relative">
       <Map shelfNumber={shelfNumber} />
       <NavBar />
-      <div className="h-screen">
       <SearchDrawer updateShelfNumber={setShelfNumber} />
-      </div>
     </div>
   );
 }

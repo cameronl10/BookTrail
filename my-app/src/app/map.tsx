@@ -104,7 +104,6 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 		else setUserLocation(initial_node) // just a default
 
 		const clickHandler = ({ position }: TMapClickEvent) => {
-			console.log(mapView.currentMap.createCoordinate(position.latitude, position.longitude).nearestNode)
 			const coordinate = mapView.currentMap.createCoordinate(position.latitude, position.longitude)
 			const nearestNode = coordinate.nearestNode
 			setUserLocation(nearestNode)
@@ -112,7 +111,6 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 
 		const mapChangedHandler = (e: E_SDK_EVENT_PAYLOAD['MAP_CHANGED_WITH_REASON']) => {
 			if (hasRenderedInitPath.current) return
-			console.log("map changed", e.reason) // TODO check if this can be used for lazyloading
 			const startLocation = venue.locations.find((location) => location.name === "Ike's Cafe")!
 			const endLocation = venue.locations.find((location) => location.name === 'Shelf A1') ?? 
 				venue.locations.find((location) => location.name == 'Shelf Z1') ?? null
@@ -177,7 +175,7 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 				try {
 					await mapView.StackedMaps.enable({ verticalDistanceBetweenMaps: 30 })
 					await mapView.StackedMaps.showOverview()
-					mapView.Camera.interactions.set({zoom: true})
+					mapView.Camera.interactions.set({zoom: true, rotationAndTilt: true})
 					setStackOn(true)
 				} catch (e) {
 					console.error("stack toggle error:", e)
