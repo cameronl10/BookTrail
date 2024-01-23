@@ -2,34 +2,67 @@
 import SearchBox from "./searchbox";
 import SearchArea from "./searcharea";
 import useBookQuery, { QueryResult } from "./useBookQuery";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
+import { Drawer, DrawerContent, DrawerGripper, DrawerTrigger } from "../ui/drawer";
 
 export default function SearchDrawer({ updateShelfNumber }: { updateShelfNumber: (a: number) => void }) {
-  const {setHasResult, setQuery, query_books, searchBoxRef, hasResult, queryData, loading, queryError} = useBookQuery();
-  
-  return (
-    <div
-      className="
-        w-full flex flex-col gap-y-4 rounded-t-3xl overflow-clip
-        fixed transition-[top] z-10
-        bg-slate-800 bg-opacity-80 backdrop-blur-md
-        [&>div]:mx-4 pt-8 pb-10
-      "
-      style={{ top: "10%" }}
-    >
-      <SearchBox setHasResult={setHasResult} setQuery={setQuery} query_books={query_books} searchBoxRef={searchBoxRef}/>
+	const searchBoxRef = useRef<HTMLInputElement>(null);
+	const [query, setQuery] = useState<string>("");	
+	const { setHasResult, requestQuery, hasResult, queryResult, loading, queryError } = useBookQuery(query);
+	const processQueryEvent: FormEventHandler<HTMLFormElement> = (e) => {
+        e.preventDefault();
+		setSnap(SnapPoints.HIGH)
+		requestQuery()
+	}
 
-      {/* SCROLL AREA */}
-      <SearchArea
-        book_clicked_handler={(book: QueryResult) => {
-          updateShelfNumber(book.shelf_id)
-        }}
-        setSearchBox={(s: string) => {
-          if (searchBoxRef.current == null) return;
-          searchBoxRef.current.value = s;
-          setQuery(s);
-        }}
-        hasResult={hasResult} queryData={queryData} loading={loading} error={queryError} updateShelfNumber={updateShelfNumber}
-      />
-    </div>
-  );
+	const [isScrolled, setIsScrolled] = useState<boolean>(false);
+	const [snap, setSnap] = useState<number | string | null>(null);
+	const [open, setOpen] = useState(true);
+	enum SnapPoints { LOW=0.3, MID=0.6, HIGH=1 }
+	useEffect(() => {
+		console.log(snap)
+	}, [snap])
+	return (
+		<Drawer
+			snapPoints={[SnapPoints.LOW, SnapPoints.MID, SnapPoints.HIGH]}
+			activeSnapPoint={snap}
+			setActiveSnapPoint={setSnap}
+			modal={false}
+			open={open}
+			dismissible={false}
+		>
+			<DrawerContent className="
+				bg-slate-800 bg-opacity-80 backdrop-blur-md
+				[&>div]:px-4
+			">
+				<DrawerGripper className="!px-auto"/>
+				<SearchBox
+					setHasResult={setHasResult}
+					processQueryEvent={processQueryEvent}
+					query={query} setQuery={setQuery}
+					searchBoxRef={searchBoxRef}
+				/>
+				<hr className="transition-[opacity] duration-400 delay-100 border-slate-400" style={{opacity: Number(isScrolled) }}/>
+				<div
+					className={`h-[45rem] [&>div:last-child]:pb-10 ${snap === SnapPoints.HIGH ? "overflow-y-auto" : "overflow-hidden"}`}
+					onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 0)}
+				>
+					<SearchArea
+						bookClickedHandler={(book: QueryResult) => {
+							updateShelfNumber(book.shelf_id)
+							setSnap(SnapPoints.MID)
+							console.log("book clicked", book)
+						}}
+						setSearchBoxValue={(s: string) => {
+							if (searchBoxRef.current == null) return;
+							searchBoxRef.current.value = s;
+							setQuery(s);
+						}}
+						hasResult={hasResult} queryResults={queryResult}
+						loading={loading} error={queryError}
+					/>
+				</div>
+			</DrawerContent>
+		</Drawer>
+	);
 }

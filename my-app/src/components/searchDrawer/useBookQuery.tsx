@@ -11,17 +11,15 @@ export interface QueryResult {
     author?: string
 }
 
-export default function useBookQuery() {
+export default function useBookQuery(query: string) {
     const { user } = useUser();
 
-    const searchBoxRef = useRef<HTMLInputElement>(null);
-    const [query, setQuery] = useState<string>("");
-    const [queryData, setQueryData] = useState<QueryResult[] | null>(null);
+    const [queryResult, setQueryResults] = useState<QueryResult[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [hasResult, setHasResult] = useState(false);
     const [queryError, setQueryError] = useState<string | null>(null);
-    const query_books: FormEventHandler<HTMLFormElement> = async (e) => {
-        e.preventDefault();
+
+    const requestQuery = async () => {
         setLoading(true)
         setQueryError(null)
 
@@ -41,9 +39,8 @@ export default function useBookQuery() {
         const data = await response.json()
         setHasResult(true);
         setLoading(false);
-        setQueryData(data.matches);
+        setQueryResults(data.matches);
     }
 
-
-    return {setHasResult, setQuery, query_books, searchBoxRef, hasResult, queryData, loading, queryError}
+    return {setHasResult, requestQuery, hasResult, queryResult, loading, queryError}
 };

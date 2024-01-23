@@ -1,6 +1,7 @@
 "use client"
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
+	E_MAP_CHANGED_REASON,
 	E_SDK_EVENT,
 	E_SDK_EVENT_PAYLOAD,
 	getVenueMaker,
@@ -109,9 +110,9 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 			setUserLocation(nearestNode)
 		}
 
-		const mapChangedHandler = () => {
+		const mapChangedHandler = (e: E_SDK_EVENT_PAYLOAD['MAP_CHANGED_WITH_REASON']) => {
 			if (hasRenderedInitPath.current) return
-			console.log("map changed")
+			console.log("map changed", e.reason) // TODO check if this can be used for lazyloading
 			const startLocation = venue.locations.find((location) => location.name === "Ike's Cafe")!
 			const endLocation = venue.locations.find((location) => location.name === 'Shelf A1') ?? 
 				venue.locations.find((location) => location.name == 'Shelf Z1') ?? null
@@ -122,11 +123,11 @@ export default function Map({ shelfNumber }: { shelfNumber: number | null }) {
 		}
 
 		mapView.on(E_SDK_EVENT.CLICK, clickHandler)
-		mapView.on(E_SDK_EVENT.MAP_CHANGED, mapChangedHandler)
+		mapView.on(E_SDK_EVENT.MAP_CHANGED_WITH_REASON, mapChangedHandler)
 
 		return () => {
 			mapView.off(E_SDK_EVENT.CLICK, clickHandler)
-			mapView.off(E_SDK_EVENT.MAP_CHANGED, mapChangedHandler)
+			mapView.off(E_SDK_EVENT.MAP_CHANGED_WITH_REASON, mapChangedHandler)
 		}
 	}, [mapView, venue])
 
